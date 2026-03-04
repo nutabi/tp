@@ -307,10 +307,14 @@ Use case ends.
   * 1a1. CampusBridge shows a failure message indicating that user input is empty.
   
   Use case ends.
+
+
 * 1b. User input does not follow the specified format. 
   * 1b1. CampusBridge shows a failure message indicating that input is invalid. 
   
   Use case ends.
+
+
 * 1c. Email provided in contact details already exists in the contact list. 
   * 1c1. CampusBridge shows a failure message indicating that email already exists.
   
