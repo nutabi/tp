@@ -313,6 +313,24 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 2.
 
+**Use Case: UC05 - Search contacts**
+
+**Preconditions: Application is running**
+
+**MSS:**
+1. User types a search query containing either a name or email
+2. User submits search
+3. CampusBridge shows the list of contacts matching the search query (email or name)
+
+Use case ends.
+
+**Extensions:**
+
+* 3a. CampusBridge can’t find any contacts matching the search query.
+    * 3a1. CampusBridge shows an error message indicating that there are no contacts.
+
+  Use case ends.
+
 *{More to be added}*
 
 ### Non-Functional Requirements
