@@ -9,6 +9,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
+### Chew Wei Jie
+<img src="images/happyweijie.png" width="200px">
+
+[[github](https://github.com/happyweijie)]
+
+* Role: Developer
+* Responsibilities: Code Quality
+
 ### Ng See Pui
 
 <img src="images/seepui.png" width="200px">
