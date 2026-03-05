@@ -305,12 +305,15 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 4. CampusBridge saves the updated list to storage. 
 5. CampusBridge shows a success message.
 
+Use case ends.
+
 **Extension:**
 * 2a. User input is empty. 
   * 2a1. CampusBridge shows a failure message indicating that user input is empty. 
   * 2a2. CampusBridge requests the user to re-enter input. 
   
   Use case resumes at step 2.
+
   
 * 2b. User input does not follow the specified format. 
   * 2b1. CampusBridge shows a failure message indicating that input is invalid. 
@@ -318,10 +321,12 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
   Use case resumes at step 2.
 
+
 * 2c. Email provided in contact details already exists in the contact list. 
   * 2c1. CampusBridge shows a failure message indicating that email already exists. 
   
   Use case ends.
+
 
 * 4a. Storage file cannot be written or accessed. 
   * 4a1. CampusBridge shows a failure message indicating that the list could not be saved. 
@@ -342,20 +347,26 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 6. CampusBridge saves the updated list to storage.
 7. CampusBridge shows a success message.
 
+Use case ends.
+
+**Extension:**
 * 2a. The list is empty.
     * 2a1. CampusBridge shows a failure message indicating that the contact list is empty.
 
   Use case ends.
+
   
 * 3a. The given index/email is invalid.
     * 3a1. CampusBridge shows a failure message indicating that the index/email is invalid.
 
   Use case resumes at step 2.
 
+
 * 4a. The given new contact details does not follow the specified format.
     * 4a1. CampusBridge shows a failure message indicating that input is invalid.
 
   Use case resumes at step 2.
+
 
 * 6a. Storage file cannot be written or accessed.
     * 6a1. CampusBridge shows a failure message indicating that the list could not be saved.
@@ -375,7 +386,6 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 5. CampusBridge deletes the contact from the list.
 6. CampusBridge saves the updated list in storage.
 7. CampusBridge shows a success message.
-
 
 Use case ends.
 
@@ -416,12 +426,13 @@ Use case ends.
     
   Use case ends.
 
+
 * 3b. CampusBridge detects that the email format is invalid.
     * 3b1. CampusBridge shows an error message indicating that the email format is invalid.
   
   Use case ends.
-  
-  
+
+
 **Use Case: UC06 - Add a tag to an existing contact**
 
 **Preconditions: Application is running**
