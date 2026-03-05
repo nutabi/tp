@@ -354,16 +354,19 @@ Use case ends.
     * 2a1. CampusBridge shows a failure message indicating that the contact list is empty.
 
   Use case ends.
+
   
 * 3a. The given index/email is invalid.
     * 3a1. CampusBridge shows a failure message indicating that the index/email is invalid.
 
   Use case resumes at step 2.
 
+
 * 4a. The given new contact details does not follow the specified format.
     * 4a1. CampusBridge shows a failure message indicating that input is invalid.
 
   Use case resumes at step 2.
+
 
 * 6a. Storage file cannot be written or accessed.
     * 6a1. CampusBridge shows a failure message indicating that the list could not be saved.
