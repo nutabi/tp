@@ -313,7 +313,7 @@ Use case ends.
   * 3a2. CampusBridge requests the user to re-enter input.
   * 3a3. User enters a new input.
   
-  Steps 3a1 - 3a3 are repeated until input is valid.\
+  Steps 3a1 - 3a3 are repeated until input is valid.  
   Use case resumes at step 4.
 
 * 3b. Email already exists in the contact list.
@@ -334,7 +334,7 @@ Use case ends.
 
 #### Use Case: UC02 - Edit a contact
 
-**Preconditions: Application is running and the user has added a contact**
+**Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
 1. User <ins>requests to list contacts (UC04)</ins>.
@@ -357,7 +357,7 @@ Use case ends.
     * 4b2. CampusBridge requests the user to re-enter input.
     * 4b3. User enters a new input.
 
-  Steps 4b1 - 4b3 are repeated until input is valid.\
+  Steps 4b1 - 4b3 are repeated until input is valid.  
   Use case resumes at step 5.
 
 * 5a. Contact cannot be updated.
@@ -373,7 +373,7 @@ Use case ends.
 
 #### Use Case: UC03 - Delete a contact
 
-**Preconditions: Application is running and the user has added a contact**
+**Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
 1. User <ins>requests to list contacts (UC04)</ins>.
@@ -395,7 +395,7 @@ Use case ends.
     * 3b2. CampusBridge requests the user to re-enter input.
     * 3b3. User enters a new input.
 
-  Steps 3b1 - 3b3 are repeated until input is valid.\
+  Steps 3b1 - 3b3 are repeated until input is valid.  
   Use case resumes at step 4.
 
 * 4a. Contact cannot be deleted.
@@ -426,7 +426,7 @@ Use case ends.
     * 1a2. CampusBridge requests the user to re-enter input.
     * 1a3. User enters a new input.
 
-  Steps 1a1 - 1a3 are repeated until input is valid.\
+  Steps 1a1 - 1a3 are repeated until input is valid.  
   Use case resumes at step 2.
 
 * 2a. No contacts exist in the list.
@@ -453,7 +453,7 @@ Use case ends.
     * 3a2. CampusBridge requests the user to re-enter input.
     * 3a3. User enters a new input.
 
-  Steps 3a1 - 3a3 are repeated until input is valid.\
+  Steps 3a1 - 3a3 are repeated until input is valid.  
   Use case resumes at step 4.
 
 * 4a. No contacts exist in the list.
@@ -486,7 +486,7 @@ Use case ends.
     * 3b2. CampusBridge requests the user to re-enter input.
     * 3b3. User enters a new input.
 
-  Steps 3b1 - 3b3 are repeated until input is valid.\
+  Steps 3b1 - 3b3 are repeated until input is valid.  
   Use case resumes at step 4.
 
 * 3c. Tag already exists for contact.
