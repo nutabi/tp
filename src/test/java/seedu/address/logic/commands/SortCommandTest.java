@@ -45,7 +45,7 @@ public class SortCommandTest {
         assertNotEquals(sortByNameAsc, sortByEmailAsc);
 
         // different type -> returns false
-        assertNotEquals(1, sortByNameAsc);
+        assertNotEquals(sortByNameAsc, 1);
 
         // null -> returns false
         assertNotEquals(null, sortByNameAsc);
