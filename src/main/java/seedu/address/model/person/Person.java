@@ -37,7 +37,7 @@ public class Person {
      * Overloaded constructor with TelegramHandle field.
      */
     public Person(Name name, Phone phone, Email email, Address address, TelegramHandle telegramHandle, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+        requireAllNonNull(name, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -104,7 +104,7 @@ public class Person {
 
         Person otherPerson = (Person) other;
         return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
+                && Objects.equals(phone, otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
                 && Objects.equals(telegramHandle, otherPerson.telegramHandle)
