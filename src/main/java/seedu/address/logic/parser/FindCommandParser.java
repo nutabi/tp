@@ -26,27 +26,14 @@ public class FindCommandParser implements Parser<FindCommand> {
         ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(args,
                 PREFIX_NAME, PREFIX_EMAIL);
 
-        // Throw exception if preamble is not empty or both name and email fields not specified
+        List<String> nameKeywords = parseKeywords(argumentMultimap, PREFIX_NAME);
+
+        List<String> emailKeywords = parseKeywords(argumentMultimap, PREFIX_EMAIL);
+
+        // Throw exception if preamble is not empty, eg "find alice n/bob"
+        // Both name or email keywords are not specified
         if (!argumentMultimap.getPreamble().isEmpty()
-            || !isNameOrEmailPrefixPresent(argumentMultimap)) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        }
-
-        List<String> nameKeywords = argumentMultimap.getAllValues(PREFIX_NAME)
-                .stream()
-                .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
-                .filter(keyword -> !keyword.isBlank())
-                .toList();
-
-        List<String> emailKeywords = argumentMultimap.getAllValues(PREFIX_EMAIL)
-                .stream()
-                .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
-                .filter(keyword -> !keyword.isBlank())
-                .toList();
-
-        // If no name or email keywords specified
-        if (nameKeywords.isEmpty() && emailKeywords.isEmpty()) {
+            || (nameKeywords.isEmpty() && emailKeywords.isEmpty())) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
@@ -55,11 +42,24 @@ public class FindCommandParser implements Parser<FindCommand> {
     }
 
     /**
-     * Returns true if at least one of {@code PREFIX_NAME} or {@code PREFIX_EMAIL}
-     * contains non-empty {@code Optional} values in the given {@code ArgumentMultimap}.
+     * Extracts and processes keywords associated with the specified {@code prefix}
+     * from the given {@code ArgumentMultimap}.
+     *
+     * <p>All values corresponding to the prefix are split by whitespace into individual
+     * keywords. Blank or empty keywords are discarded.</p>
+     *
+     * <p>For example, if the input contains {@code n/alice bob n/charlie}, this method
+     * returns a list containing {@code ["alice", "bob", "charlie"]}.</p>
+     *
+     * @param argumentMultimap The {@code ArgumentMultimap} containing parsed arguments.
+     * @param prefix The {@code Prefix} whose associated values are to be processed.
+     * @return A list of non-blank keywords extracted from the specified prefix.
      */
-    private static boolean isNameOrEmailPrefixPresent(ArgumentMultimap argumentMultimap) {
-        return Stream.of(PREFIX_NAME, PREFIX_EMAIL)
-                .anyMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    private static List<String> parseKeywords(ArgumentMultimap argumentMultimap, Prefix prefix) {
+        return argumentMultimap.getAllValues(prefix)
+                .stream()
+                .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
+                .filter(keyword -> !keyword.isBlank())
+                .toList();
     }
 }
