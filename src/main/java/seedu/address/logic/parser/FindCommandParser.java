@@ -6,11 +6,12 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameOrEmailContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -23,8 +24,9 @@ public class FindCommandParser implements Parser<FindCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public FindCommand parse(String args) throws ParseException {
-        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_NAME, PREFIX_EMAIL);
+        // ArgumentTokenizer recognizes prefixes only when preceded by whitespace.
+        // Add a leading space so first prefix at start of argument string is recognized.
+        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(" " + args, PREFIX_NAME, PREFIX_EMAIL);
 
         List<String> nameKeywords = parseKeywords(argumentMultimap, PREFIX_NAME);
 
@@ -32,7 +34,7 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         // Throw exception if preamble is not empty, eg "find alice n/bob"
         // Both name or email keywords are not specified
-        if (!argumentMultimap.getPreamble().isEmpty()
+        if (!argumentMultimap.getPreamble().isBlank()
             || (nameKeywords.isEmpty() && emailKeywords.isEmpty())) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
