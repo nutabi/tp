@@ -35,9 +35,9 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label phone;
     @FXML
-    private Label address;
-    @FXML
     private Label email;
+    @FXML
+    private Label telegramHandle;
     @FXML
     private FlowPane tags;
 
@@ -49,9 +49,17 @@ public class PersonCard extends UiPart<Region> {
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
-        phone.setText(person.getPhone().value);
-        address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+
+        boolean hasPhone = person.getPhone() != null;
+        phone.setText(hasPhone ? person.getPhone().value : "");
+        phone.setManaged(hasPhone);
+        phone.setVisible(hasPhone);
+
+        boolean hasTelegram = person.getTelegramHandle() != null;
+        telegramHandle.setText(hasTelegram ? person.getTelegramHandle().value : "");
+        telegramHandle.setManaged(hasTelegram);
+        telegramHandle.setVisible(hasTelegram);
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
