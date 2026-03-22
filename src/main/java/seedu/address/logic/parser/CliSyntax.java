@@ -15,5 +15,7 @@ public class CliSyntax {
     public static final Prefix PREFIX_ORDER = new Prefix("o/");
     public static final Prefix PREFIX_REVERSE = new Prefix("r/");
     public static final Prefix PREFIX_INDEX = new Prefix("i/");
-
+    public static final Prefix PREFIX_ROLE_TAG = new Prefix("tr/");
+    public static final Prefix PREFIX_COURSE_TAG = new Prefix("tc/");
+    public static final Prefix PREFIX_GENERAL_TAG = new Prefix("tg/");
 }
