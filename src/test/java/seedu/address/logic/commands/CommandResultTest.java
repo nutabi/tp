@@ -33,6 +33,10 @@ public class CommandResultTest {
 
         // different exit value -> returns false
         assertFalse(commandResult.equals(new CommandResult("feedback", false, true)));
+
+        // different helpUrl value -> returns false
+        assertFalse(new CommandResult("feedback", false, false, "url1")
+                .equals(new CommandResult("feedback", false, false, "url2")));
     }
 
     @Test

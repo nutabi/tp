@@ -1,5 +1,9 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.HelpCommand.SHOWING_HELP_MESSAGE;
 
@@ -26,5 +30,29 @@ public class HelpCommandTest {
         CommandResult expectedCommandResult = new CommandResult(
                 String.format(HelpCommand.SHOWING_HELP_COMMAND_MESSAGE, "add"), true, false, expectedUrl);
         assertCommandSuccess(new HelpCommand("add"), model, expectedCommandResult, expectedModel);
+    }
+
+    @Test
+    public void equals_sameObject_returnsTrue() {
+        HelpCommand cmd = new HelpCommand();
+        assertTrue(cmd.equals(cmd));
+    }
+
+    @Test
+    public void equals_notHelpCommand_returnsFalse() {
+        HelpCommand cmd = new HelpCommand();
+        assertFalse(cmd.equals("help"));
+    }
+
+    @Test
+    public void equals_differentTargetCommand_returnsFalse() {
+        assertNotEquals(new HelpCommand(), new HelpCommand("add"));
+        assertNotEquals(new HelpCommand("add"), new HelpCommand("edit"));
+    }
+
+    @Test
+    public void hashCode_consistency() {
+        assertEquals(new HelpCommand().hashCode(), new HelpCommand().hashCode());
+        assertEquals(new HelpCommand("add").hashCode(), new HelpCommand("add").hashCode());
     }
 }
