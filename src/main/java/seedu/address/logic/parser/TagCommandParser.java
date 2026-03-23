@@ -15,15 +15,15 @@ import seedu.address.model.tag.Tag;
 import seedu.address.model.tag.TagType;
 
 /**
- * Parses input arguments and creates a new AddTagCommand object
+ * Parses input arguments and creates a new TagCommand object.
  */
 public class TagCommandParser implements Parser<TagCommand> {
 
     /**
-     * Parses the given {@code String} of arguments in the context of the AddTagCommand
-     * and returns an AddTagCommand object for execution.
+     * Parses the given {@code String} of arguments in the context of the TagCommand
+     * and returns an TagCommand object for execution.
      *
-     * @throws ParseException if the user input does not conform the expected format
+     * @throws ParseException if the user input does not conform the expected format.
      */
     public TagCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
@@ -55,6 +55,5 @@ public class TagCommandParser implements Parser<TagCommand> {
                 argMultimap.getAllValues(PREFIX_GENERAL_TAG), TagType.GENERAL));
 
         return new TagCommand(index, tagList);
-
     }
 }
