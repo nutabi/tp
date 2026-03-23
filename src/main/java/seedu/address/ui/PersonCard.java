@@ -1,15 +1,17 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
-import java.util.function.Consumer;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.util.Duration;
 import seedu.address.model.person.Person;
 
 /**
@@ -29,8 +31,6 @@ public class PersonCard extends UiPart<Region> {
 
     public final Person person;
 
-    private final Consumer<String> feedbackConsumer;
-
     @FXML
     private HBox cardPane;
     @FXML
@@ -49,10 +49,9 @@ public class PersonCard extends UiPart<Region> {
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
-    public PersonCard(Person person, int displayedIndex, Consumer<String> feedbackConsumer) {
+    public PersonCard(Person person, int displayedIndex) {
         super(FXML);
         this.person = person;
-        this.feedbackConsumer = feedbackConsumer;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         email.setText(person.getEmail().value);
@@ -72,13 +71,13 @@ public class PersonCard extends UiPart<Region> {
         phone.getStyleClass().add("copyable-label");
         telegramHandle.getStyleClass().add("copyable-label");
 
-        name.setOnMouseClicked(e -> copyToClipboard(person.getName().fullName));
-        email.setOnMouseClicked(e -> copyToClipboard(person.getEmail().value));
+        setupCopyable(name, person.getName().fullName);
+        setupCopyable(email, person.getEmail().value);
         if (hasPhone) {
-            phone.setOnMouseClicked(e -> copyToClipboard(person.getPhone().value));
+            setupCopyable(phone, person.getPhone().value);
         }
         if (hasTelegram) {
-            telegramHandle.setOnMouseClicked(e -> copyToClipboard(person.getTelegramHandle().value));
+            setupCopyable(telegramHandle, person.getTelegramHandle().value);
         }
 
         person.getTags().stream()
@@ -87,15 +86,25 @@ public class PersonCard extends UiPart<Region> {
                     Label tagLabel = new Label(tag.tagName);
                     int hue = Math.floorMod(tag.tagName.hashCode(), 360);
                     tagLabel.setStyle("-fx-background-color: hsb(" + hue + ", 70%, 50%);");
-                    tagLabel.setOnMouseClicked(e -> copyToClipboard(tag.tagName));
+                    setupCopyable(tagLabel, tag.tagName);
                     tags.getChildren().add(tagLabel);
                 });
     }
 
-    private void copyToClipboard(String text) {
+    private void setupCopyable(Label label, String text) {
+        label.setTooltip(new Tooltip("Click to copy"));
+        label.setOnMouseClicked(e -> copyToClipboard(label, text));
+    }
+
+    private void copyToClipboard(Label label, String text) {
         ClipboardContent content = new ClipboardContent();
         content.putString(text);
         Clipboard.getSystemClipboard().setContent(content);
-        feedbackConsumer.accept("Copied: " + text);
+
+        String original = label.getText();
+        label.setText("✓ Copied!");
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(e -> label.setText(original));
+        pause.play();
     }
 }
