@@ -87,7 +87,7 @@ public class Person {
     }
 
     /**
-     * Returns true if both persons have the same email.
+     * Returns true if both persons have the same email or the same non-null telegram handle.
      * This defines a weaker notion of equality between two persons.
      */
     public boolean isSamePerson(Person otherPerson) {
@@ -95,8 +95,16 @@ public class Person {
             return true;
         }
 
-        return otherPerson != null
-                && otherPerson.getEmail().equals(getEmail());
+        if (otherPerson == null) {
+            return false;
+        }
+
+        boolean sameEmail = otherPerson.getEmail().equals(getEmail());
+        boolean sameTelegramHandle = getTelegramHandle() != null
+                && otherPerson.getTelegramHandle() != null
+                && otherPerson.getTelegramHandle().equals(getTelegramHandle());
+
+        return sameEmail || sameTelegramHandle;
     }
 
     /**
