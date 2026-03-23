@@ -41,9 +41,31 @@ public class PersonTest {
                 .withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
                 .withAddress(VALID_ADDRESS_BOB)
-                .withTags(VALID_TAG_HUSBAND)
+                .withRoleTags(VALID_TAG_HUSBAND)
                 .build();
         assertTrue(ALICE.isSamePerson(editedAlice));
+
+        // same telegram handle, different email -> returns true
+        Person aliceWithTelegram = new PersonBuilder(ALICE).withTelegramHandle("alice123").build();
+        Person editedTelegramAlice = new PersonBuilder(aliceWithTelegram)
+                .withEmail(VALID_EMAIL_BOB)
+                .build();
+        assertTrue(aliceWithTelegram.isSamePerson(editedTelegramAlice));
+
+        // different email and different telegram handle -> returns false
+        Person differentAlice = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .withTelegramHandle("alice123")
+                .build();
+        assertFalse(ALICE.isSamePerson(differentAlice));
+
+        // different email, telegram handle missing on one side -> returns false
+        Person noTelegram = new PersonBuilder(ALICE).build();
+        Person withTelegram = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .withTelegramHandle("alice123")
+                .build();
+        assertFalse(noTelegram.isSamePerson(withTelegram));
 
         // different email, all other attributes same -> returns false
         editedAlice = new PersonBuilder(ALICE).withEmail(VALID_EMAIL_BOB).build();
@@ -85,7 +107,7 @@ public class PersonTest {
         assertFalse(ALICE.equals(editedAlice));
 
         // different tags -> returns false
-        editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
+        editedAlice = new PersonBuilder(ALICE).withRoleTags(VALID_TAG_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
     }
 

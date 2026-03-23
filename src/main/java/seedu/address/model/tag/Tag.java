@@ -12,6 +12,7 @@ import java.util.Objects;
 public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS = "Tags names should be alphanumeric";
+    public static final String MESSAGE_CONSTRAINTS_TAG_TYPE = "Invalid tag type: %1$s";
     public static final String VALIDATION_REGEX = "\\p{Alnum}+";
 
     public final String tagName;

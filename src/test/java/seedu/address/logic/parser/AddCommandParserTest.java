@@ -25,7 +25,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.testutil.TypicalPersons.AMY;
+import static seedu.address.testutil.TypicalPersons.AMY_NO_TAGS;
 import static seedu.address.testutil.TypicalPersons.BOB_NO_TAGS;
 
 import org.junit.jupiter.api.Test;
@@ -124,9 +124,9 @@ public class AddCommandParserTest {
     @Test
     public void parse_optionalFieldsMissing_success() {
         Person expectedPerson = new Person(
-                AMY.getName(),
+                AMY_NO_TAGS.getName(),
                 null,
-                AMY.getEmail(),
+                AMY_NO_TAGS.getEmail(),
                 Address.makeDefault(),
                 null,
                 java.util.Collections.emptySet());

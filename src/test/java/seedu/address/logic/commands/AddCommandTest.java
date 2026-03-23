@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.AMY_NO_TAGS;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class AddCommandTest {
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
+    public void execute_duplicateEmail_throwsCommandException() {
         Person validPerson = new PersonBuilder().build();
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
@@ -55,33 +55,46 @@ public class AddCommandTest {
     }
 
     @Test
+    public void execute_duplicateTelegramHandle_throwsCommandException() {
+        Person existingPerson = new PersonBuilder().withTelegramHandle("alice123").build();
+        Person personWithSameTelegramHandle = new PersonBuilder(existingPerson)
+                .withEmail("different@example.com")
+                .build();
+
+        AddCommand addCommand = new AddCommand(personWithSameTelegramHandle);
+        ModelStub modelStub = new ModelStubWithPerson(existingPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
     public void equals() {
-        Person alice = new PersonBuilder().withName("Alice").build();
+        Person amy = new PersonBuilder().withName("Amy").build();
         Person bob = new PersonBuilder().withName("Bob").build();
-        AddCommand addAliceCommand = new AddCommand(alice);
+        AddCommand addAmyCommand = new AddCommand(amy);
         AddCommand addBobCommand = new AddCommand(bob);
 
         // same object -> returns true
-        assertTrue(addAliceCommand.equals(addAliceCommand));
+        assertTrue(addAmyCommand.equals(addAmyCommand));
 
         // same values -> returns true
-        AddCommand addAliceCommandCopy = new AddCommand(alice);
-        assertTrue(addAliceCommand.equals(addAliceCommandCopy));
+        AddCommand addAmyCommandCopy = new AddCommand(amy);
+        assertTrue(addAmyCommand.equals(addAmyCommandCopy));
 
         // different types -> returns false
-        assertFalse(addAliceCommand.equals(1));
+        assertFalse(addAmyCommand.equals(1));
 
         // null -> returns false
-        assertFalse(addAliceCommand.equals(null));
+        assertFalse(addAmyCommand.equals(null));
 
         // different person -> returns false
-        assertFalse(addAliceCommand.equals(addBobCommand));
+        assertFalse(addAmyCommand.equals(addBobCommand));
     }
 
     @Test
     public void toStringMethod() {
-        AddCommand addCommand = new AddCommand(ALICE);
-        String expected = AddCommand.class.getCanonicalName() + "{toAdd=" + ALICE + "}";
+        AddCommand addCommand = new AddCommand(AMY_NO_TAGS);
+        String expected = AddCommand.class.getCanonicalName() + "{toAdd=" + AMY_NO_TAGS + "}";
         assertEquals(expected, addCommand.toString());
     }
 
