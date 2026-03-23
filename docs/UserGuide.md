@@ -66,11 +66,20 @@ AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized fo
 
 ### Viewing help : `help`
 
-Shows a message explaining how to access the help page.
+Opens the help window with a link to this user guide, or opens the user guide directly to the section for a specific command.
 
 ![help message](images/helpMessage.png)
 
-Format: `help`
+Format: `help [COMMAND]`
+
+* `COMMAND` is optional. When provided, it must be a valid command name (e.g. `add`, `edit`).
+* If `COMMAND` is omitted, the help window is shown.
+* If `COMMAND` is provided, your browser opens the user guide at the section for that command.
+
+Examples:
+* `help` — opens the help window.
+* `help add` — opens the user guide at the **Adding a person** section.
+* `help sort` — opens the user guide at the **Sorting persons** section.
 
 
 ### Adding a person: `add`
@@ -256,4 +265,4 @@ Action | Format, Examples
 **Filter** | `filter t/TAG [MORE_TAGS]…`<br> e.g., `filter t/friend t/colleague`
 **List** | `list`
 **Sort** | `sort o/ORDER [r/]`<br> e.g., `sort o/name`, `sort o/name r/`
-**Help** | `help`
+**Help** | `help [COMMAND]`<br> e.g., `help`, `help add`, `help sort`
