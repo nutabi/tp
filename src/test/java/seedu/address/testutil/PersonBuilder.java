@@ -62,10 +62,29 @@ public class PersonBuilder {
     }
 
     /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
+     * Parses the {@code tags} into a {@code Set<Tag>} (default GENERAL) and sets it
+     * to the {@code Person} that we are building.
      */
-    public PersonBuilder withTags(String ... tags) {
-        this.tags = SampleDataUtil.getTagSet(tags);
+    public PersonBuilder withGeneralTags(String... tags) {
+        this.tags.addAll(SampleDataUtil.getGeneralTagSet(tags));
+        return this;
+    }
+
+    /**
+     * Parses the {@code roleTags} into a {@code Set<Tag>} (ROLE) and sets it
+     * to the {@code Person} that we are building.
+     */
+    public PersonBuilder withRoleTags(String... roleTags) {
+        this.tags.addAll(SampleDataUtil.getRoleTagSet(roleTags));
+        return this;
+    }
+
+    /**
+     * Parses the {@code courseTags} into a {@code Set<Tag>} (COURSE) and sets it
+     * to the {@code Person} that we are building.
+     */
+    public PersonBuilder withCourseTags(String... courseTags) {
+        this.tags.addAll(SampleDataUtil.getCourseTagSet(courseTags));
         return this;
     }
 
