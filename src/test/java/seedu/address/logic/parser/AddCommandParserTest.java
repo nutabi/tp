@@ -234,4 +234,11 @@ public class AddCommandParserTest {
                 NAME_DESC_BOB + EMAIL_DESC_BOB + " " + PREFIX_INDEX + "3 " + PREFIX_ROLE_TAG + "tutor",
                 "Invalid command format: unexpected extra input in add command: 'i/3'.");
     }
+
+    @Test
+    public void parse_multipleKnownNonAddPrefixes_replacesWithEarlierPrefix() {
+        assertParseFailure(parser,
+                NAME_DESC_BOB + EMAIL_DESC_BOB + " " + PREFIX_ROLE_TAG + "tutor " + PREFIX_INDEX + "3",
+                "Invalid command format: unexpected extra input in add command: 'tr/tutor'.");
+    }
 }
