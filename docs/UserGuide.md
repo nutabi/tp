@@ -174,11 +174,14 @@ Examples:
 * `find t/friends`  
   Returns all persons tagged with `friends`
 
-* `find n/alex e/doe`  
-  Returns persons whose name contains `alex` **and** email contains `doe`
+* `find n/alex e/u.nus.edu`  
+  Returns persons whose name contains `alex` **and** email contains `u.nus.edu`
 
 * `find n/alex t/friends`  
-  Returns persons whose name contains `alex` **and** are tagged with `friends`
+  Returns persons whose name contains `alex` **and** are tagged with `friends` 
+
+* `find n/alex e/nus t/friends`  
+  Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`
 
 * `find n/alex david`  
   Returns persons whose name contains `alex` **or** `david`
