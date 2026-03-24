@@ -267,7 +267,6 @@ Action | Format, Examples
 **Delete** | `delete i/INDEX OR delete e/EMAIL`<br> e.g., `delete i/3 OR delete e/jameslee@example.com `
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com h/jlee01`
 **Find** | `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`<br> e.g., `find n/alex e/gmail t/friends`
-**Filter** | `filter t/TAG [MORE_TAGS]…`<br> e.g., `filter t/friend t/colleague`
 **List** | `list`
 **Sort** | `sort o/ORDER [r/]`<br> e.g., `sort o/name`, `sort o/name r/`
 **Help** | `help [COMMAND]`<br> e.g., `help`, `help add`, `help sort`
