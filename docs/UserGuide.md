@@ -352,7 +352,7 @@ Format: `undo`
 * Multiple undo operations can be performed consecutively, up to the number of undoable commands previously executed.
 * If there are no commands to undo, an error message will be shown.
 
-**Undoable commands:**
+Undoable commands:
 
 ```
 add
