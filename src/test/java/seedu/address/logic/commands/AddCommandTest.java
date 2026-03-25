@@ -139,7 +139,7 @@ public class AddCommandTest {
     @Test
     public void undo_personNoLongerInModel_throwsCommandException() {
         Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
-        Person toAdd = new PersonBuilder(HOON).build();
+        Person toAdd = new PersonBuilder(HOON).withEmail("stefan@u.nus.edu").build();
         AddCommand addCommand = new AddCommand(toAdd);
 
         Model expectedAfterAdd = new ModelManager(model.getAddressBook(), new UserPrefs());

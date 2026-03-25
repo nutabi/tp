@@ -246,9 +246,9 @@ public class EditCommandTest {
         Model expectedOriginal = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
 
         Person alice = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person editedAlice = new PersonBuilder(alice).withName("Temporary Name").build();
+        Person editedAlice = new PersonBuilder(alice).withName("Temporary Name").withEmail("alice@u.nus.edu").build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
-                new EditPersonDescriptorBuilder().withName("Temporary Name").build());
+                new EditPersonDescriptorBuilder().withName("Temporary Name").withEmail("alice@u.nus.edu").build());
 
         String executeMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
                 Messages.format(editedAlice))
@@ -276,8 +276,8 @@ public class EditCommandTest {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         Person alice = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
-                new EditPersonDescriptorBuilder().withEmail("tempalice@example.com").build());
-        Person editedAlice = new PersonBuilder(alice).withEmail("tempalice@example.com").build();
+                new EditPersonDescriptorBuilder().withEmail("temp@u.nus.edu").build());
+        Person editedAlice = new PersonBuilder(alice).withEmail("temp@u.nus.edu").build();
 
         String executeMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
                 Messages.format(editedAlice))
