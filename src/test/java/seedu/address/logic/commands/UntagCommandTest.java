@@ -246,7 +246,7 @@ public class UntagCommandTest {
     }
 
     @Test
-    public void toStringMethod_containsFields() {
+    public void toStringMethod() {
         Set<Tag> tagsToRemove = Set.of(
                 new Tag("friend", TagType.GENERAL),
                 new Tag("tutor", TagType.ROLE)
