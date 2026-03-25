@@ -82,7 +82,10 @@ CampusBridge supports three tag types, each displayed in a distinct colour:
 When adding or editing tags, prefix the tag name with the type:
 * `tr/TAG` — creates a Role tag
 * `tc/TAG` — creates a Course tag
-* `t/TAG` — creates a General tag
+* `tg/TAG` — creates a General tag
+
+Tag name rules:
+* Tags are **case-insensitive**. `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
 
 ### Viewing help : `help`
 
