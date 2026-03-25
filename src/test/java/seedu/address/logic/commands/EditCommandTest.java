@@ -251,7 +251,9 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName("Temporary Name").build());
 
         String executeMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
-                Messages.format(editedAlice));
+                Messages.format(editedAlice))
+                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+
         Model expectedAfterEdit = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedAfterEdit.setPerson(alice, editedAlice);
 
@@ -278,7 +280,9 @@ public class EditCommandTest {
         Person editedAlice = new PersonBuilder(alice).withEmail("tempalice@example.com").build();
 
         String executeMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
-                Messages.format(editedAlice));
+                Messages.format(editedAlice))
+                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+
         Model expectedAfterEdit = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedAfterEdit.setPerson(alice, editedAlice);
 
