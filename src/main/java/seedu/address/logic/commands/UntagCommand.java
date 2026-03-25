@@ -27,9 +27,9 @@ public class UntagCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Removes tags from the person identified by the index number used in the displayed person list.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_ROLE_TAG + "ROLE]... "
-            + "[" + PREFIX_COURSE_TAG + "COURSE]... "
-            + "[" + PREFIX_GENERAL_TAG + "GENERAL]... \n"
+            + "[" + PREFIX_ROLE_TAG + "ROLE_TAG]... "
+            + "[" + PREFIX_COURSE_TAG + "COURSE_TAG]... "
+            + "[" + PREFIX_GENERAL_TAG + "GENERAL_TAG]... \n"
             + "At least one tag must be provided.\n"
             + "Example: " + COMMAND_WORD + " 1 " + PREFIX_ROLE_TAG + "tutor "
             + PREFIX_COURSE_TAG + "cs2103 " + PREFIX_GENERAL_TAG + "friends";
@@ -103,6 +103,7 @@ public class UntagCommand extends Command {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .add("index", index)
                 .add("tagsToRemove", tagsToRemove)
                 .toString();
     }

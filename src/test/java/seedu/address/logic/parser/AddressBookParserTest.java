@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ClearTagCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -156,6 +157,16 @@ public class AddressBookParserTest {
         expectedTags.add(new Tag("friends", TagType.GENERAL));
 
         assertEquals(new UntagCommand(INDEX_FIRST_PERSON, expectedTags), command);
+    }
+
+    @Test
+    public void parseCommand_cleartag() throws Exception {
+        String input = ClearTagCommand.COMMAND_WORD + " "
+                + INDEX_FIRST_PERSON.getOneBased() + " "
+                + PREFIX_ROLE_TAG;
+
+        ClearTagCommand command = (ClearTagCommand) parser.parseCommand(input);
+        assertEquals(new ClearTagCommand(INDEX_FIRST_PERSON, TagType.ROLE), command);
     }
 
     @Test
