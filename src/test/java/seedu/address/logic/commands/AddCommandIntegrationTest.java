@@ -35,7 +35,7 @@ public class AddCommandIntegrationTest {
 
         assertCommandSuccess(new AddCommand(validPerson), model,
                 String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson))
-                        + "\n" + AddCommand.MESSAGE_NON_NUS_EMAIL,
+                        + "\n" + Messages.MESSAGE_NON_NUS_EMAIL,
                 expectedModel);
     }
 

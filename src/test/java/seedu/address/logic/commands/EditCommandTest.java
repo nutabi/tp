@@ -44,7 +44,7 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson))
-                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+                + "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
@@ -66,7 +66,7 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(indexLastPerson, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson))
-                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+                + "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(lastPerson, editedPerson);
@@ -80,7 +80,7 @@ public class EditCommandTest {
         Person editedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson))
-                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+                + "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
 
@@ -98,7 +98,7 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson))
-                + "\n" + EditCommand.MESSAGE_NON_NUS_EMAIL;
+                + "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);

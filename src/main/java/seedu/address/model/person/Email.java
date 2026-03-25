@@ -32,6 +32,8 @@ public class Email {
     private static final String DOMAIN_LAST_PART_REGEX = "(" + DOMAIN_PART_REGEX + "){2,}$"; // At least two chars
     private static final String DOMAIN_REGEX = "(" + DOMAIN_PART_REGEX + "\\.)*" + DOMAIN_LAST_PART_REGEX;
     public static final String VALIDATION_REGEX = LOCAL_PART_REGEX + "@" + DOMAIN_REGEX;
+    private static final String NUS_STUDENT_DOMAIN = "@u.nus.edu";
+    private static final String NUS_STAFF_DOMAIN = "@nus.edu.sg";
 
     public final String value;
 
@@ -89,6 +91,11 @@ public class Email {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    public boolean isNusDomain() {
+        return value.endsWith(NUS_STUDENT_DOMAIN)
+                || value.endsWith(NUS_STAFF_DOMAIN);
     }
 
 }

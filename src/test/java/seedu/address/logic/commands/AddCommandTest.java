@@ -48,7 +48,7 @@ public class AddCommandTest {
         CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
         String expectedMessage = String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson))
-                + "\n" + AddCommand.MESSAGE_NON_NUS_EMAIL;
+                + "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
         assertEquals(expectedMessage, commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }

@@ -35,9 +35,6 @@ public class AddCommand extends Command {
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON =
             "A person with this email or Telegram handle already exists in the address book";
-    public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
-    public static final String NUS_STUDENT_EMAIL_DOMAIN = "@u.nus.edu";
-    public static final String NUS_STAFF_EMAIL_DOMAIN = "@nus.edu.sg";
     public static final String MESSAGE_UNDO_SUCCESS = "Undo add person: %1$s";
     public static final String MESSAGE_UNDO_FAILURE = "Cannot undo add because the person no longer exists.";
     private final Person toAdd;
@@ -61,9 +58,8 @@ public class AddCommand extends Command {
         model.addPerson(toAdd);
 
         String resultMessage = String.format(MESSAGE_SUCCESS, Messages.format(toAdd));
-        if (!toAdd.getEmail().toString().endsWith(NUS_STUDENT_EMAIL_DOMAIN)
-                && !toAdd.getEmail().toString().endsWith(NUS_STAFF_EMAIL_DOMAIN)) {
-            resultMessage += "\n" + MESSAGE_NON_NUS_EMAIL;
+        if (!toAdd.getEmail().isNusDomain()) {
+            resultMessage += "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
         }
         return new CommandResult(resultMessage);
     }
