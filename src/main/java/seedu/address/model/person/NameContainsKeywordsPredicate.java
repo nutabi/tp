@@ -16,7 +16,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     public NameContainsKeywordsPredicate(List<String> keywords) {
         requireAllNonNull(keywords);
 
-        this.keywords = keywords;
+        this.keywords = List.copyOf(keywords);
     }
 
     @Override

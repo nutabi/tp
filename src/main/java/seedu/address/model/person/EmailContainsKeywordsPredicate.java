@@ -16,7 +16,7 @@ public class EmailContainsKeywordsPredicate implements Predicate<Person> {
     public EmailContainsKeywordsPredicate(List<String> keywords) {
         requireAllNonNull(keywords);
 
-        this.keywords = keywords;
+        this.keywords = List.copyOf(keywords);
     }
 
     @Override

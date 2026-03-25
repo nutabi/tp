@@ -33,9 +33,9 @@ public class NameEmailTagPredicate implements Predicate<Person> {
     public NameEmailTagPredicate(List<String> nameKeywords, List<String> emailKeywords, List<String> tags) {
         requireAllNonNull(nameKeywords, emailKeywords, tags);
 
-        this.nameKeywords = nameKeywords;
-        this.emailKeywords = emailKeywords;
-        this.tags = tags;
+        this.nameKeywords = List.copyOf(nameKeywords);
+        this.emailKeywords = List.copyOf(emailKeywords);
+        this.tags = List.copyOf(tags);
     }
 
     @Override
