@@ -46,8 +46,6 @@ Person *--> Email
 Person *--> TelegramHandle
 Person *--> "*" Tag
 Tag -left-> "1" TagType
-enum TagType <<enumeration>> {
-}
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
