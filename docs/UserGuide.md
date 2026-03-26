@@ -127,17 +127,14 @@ Non-NUS emails are still accepted, but a warning will be displayed to alert you 
 
 ### Viewing help : `help`
 
-Opens the help window with a link to this user guide, or opens the user guide directly to the section for a specific command.
-
-![help message](images/helpMessage.png)
+Opens the user guide in the browser, and optionally directly to the section for a specific command.
 
 Format: `help [COMMAND]`
 
-Alternatively, press `F1` to open the help window.
+Alternatively, press `F1` to open the user guide.
 
 * `COMMAND` is optional. When provided, it must be a valid command name (e.g. `add`, `edit`).
-* If `COMMAND` is omitted, the help window is shown.
-* If `COMMAND` is provided, your browser opens the user guide at the section for that command.
+* If `COMMAND` is provided, the user guide is opened at the section for that command.
 
 Examples:
 * `help` — opens the help window.
