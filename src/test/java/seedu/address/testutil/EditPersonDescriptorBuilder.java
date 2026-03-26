@@ -37,7 +37,22 @@ public class EditPersonDescriptorBuilder {
         descriptor.setPhone(person.getPhone());
         descriptor.setEmail(person.getEmail());
         descriptor.setTelegramHandle(person.getTelegramHandle());
-        descriptor.setTags(person.getTags());
+
+        Set<Tag> allTags = person.getTags();
+        Set<Tag> roleTags = Tag.filterByType(allTags, TagType.ROLE);
+        Set<Tag> courseTags = Tag.filterByType(allTags, TagType.COURSE);
+        Set<Tag> generalTags = Tag.filterByType(allTags, TagType.GENERAL);
+
+        // Only set non-empty tag sets to avoid "clear all" semantics
+        if (!roleTags.isEmpty()) {
+            descriptor.setRoleTags(roleTags);
+        }
+        if (!courseTags.isEmpty()) {
+            descriptor.setCourseTags(courseTags);
+        }
+        if (!generalTags.isEmpty()) {
+            descriptor.setGeneralTags(generalTags);
+        }
     }
 
     /**
@@ -72,14 +87,21 @@ public class EditPersonDescriptorBuilder {
         return this;
     }
 
-    /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code EditPersonDescriptor}
-     * that we are building.
-     */
-    public EditPersonDescriptorBuilder withTags(String... tags) {
-        // Hard-coded first
-        Set<Tag> tagSet = Stream.of(tags).map(s -> new Tag(s, TagType.GENERAL)).collect(Collectors.toSet());
-        descriptor.setTags(tagSet);
+    public EditPersonDescriptorBuilder withRoleTags(String... tags) {
+        Set<Tag> tagSet = Stream.of(tags).map(t -> new Tag(t, TagType.ROLE)).collect(Collectors.toSet());
+        descriptor.setRoleTags(tagSet);
+        return this;
+    }
+
+    public EditPersonDescriptorBuilder withCourseTags(String... tags) {
+        Set<Tag> tagSet = Stream.of(tags).map(t -> new Tag(t, TagType.COURSE)).collect(Collectors.toSet());
+        descriptor.setCourseTags(tagSet);
+        return this;
+    }
+
+    public EditPersonDescriptorBuilder withGeneralTags(String... tags) {
+        Set<Tag> tagSet = Stream.of(tags).map(t -> new Tag(t, TagType.GENERAL)).collect(Collectors.toSet());
+        descriptor.setGeneralTags(tagSet);
         return this;
     }
 

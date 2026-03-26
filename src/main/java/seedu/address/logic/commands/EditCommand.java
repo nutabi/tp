@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
@@ -106,12 +105,6 @@ public class EditCommand extends Command {
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 
-    private static Set<Tag> filterByType(Set<Tag> tags, TagType type) {
-        return tags.stream()
-                .filter(t -> t.getType() == type)
-                .collect(Collectors.toSet());
-    }
-
     @Override
     public boolean isUndoable() {
         return true;
@@ -148,9 +141,9 @@ public class EditCommand extends Command {
                 .orElse(personToEdit.getTelegramHandle());
 
         Set<Tag> existingTags = personToEdit.getTags();
-        Set<Tag> existingRoleTags = filterByType(existingTags, TagType.ROLE);
-        Set<Tag> existingCourseTags = filterByType(existingTags, TagType.COURSE);
-        Set<Tag> existingGeneralTags = filterByType(existingTags, TagType.GENERAL);
+        Set<Tag> existingRoleTags = Tag.filterByType(existingTags, TagType.ROLE);
+        Set<Tag> existingCourseTags = Tag.filterByType(existingTags, TagType.COURSE);
+        Set<Tag> existingGeneralTags = Tag.filterByType(existingTags, TagType.GENERAL);
 
         Set<Tag> updatedRoleTags = editPersonDescriptor.getRoleTags().orElse(existingRoleTags);
         Set<Tag> updatedCourseTags = editPersonDescriptor.getCourseTags().orElse(existingCourseTags);
