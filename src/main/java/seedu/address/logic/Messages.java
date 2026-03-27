@@ -60,6 +60,7 @@ public class Messages {
 
         String tags = person.getTags().stream()
                 .map(Tag::toString)
+                .sorted()
                 .collect(Collectors.joining(", ", "[", "]"));
 
         builder.append(tags);
