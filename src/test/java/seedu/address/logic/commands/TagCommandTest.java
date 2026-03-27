@@ -270,7 +270,8 @@ public class TagCommandTest {
         expectedTags.addAll(tagsToAdd);
         Person editedPerson = personToEdit.withTags(expectedTags);
         expectedAfterExecute.setPerson(personToEdit, editedPerson);
-        assertCommandSuccess(tagCommand, model, String.format(TagCommand.MESSAGE_SUCCESS, tagsToAdd), expectedAfterExecute);
+        assertCommandSuccess(tagCommand, model, String.format(TagCommand.MESSAGE_SUCCESS, tagsToAdd),
+                expectedAfterExecute);
 
         Model expectedAfterUndo = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         assertUndoSuccess(tagCommand, model,
