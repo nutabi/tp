@@ -15,6 +15,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -36,9 +37,14 @@ public class TagCommand extends Command {
             + PREFIX_COURSE_TAG + "cs2103 " + PREFIX_GENERAL_TAG + "friends";
 
     public static final String MESSAGE_SUCCESS = "New tags added: %1$s";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_UNDO_SUCCESS = "Undo tag operation for: %1$s";
+    public static final String MESSAGE_UNDO_FAILURE = "Cannot undo tag before command execution.";
 
     private final Index index;
     private final Set<Tag> tagsToAdd;
+    private Person originalPerson;
+    private Person updatedPerson;
 
     /**
      * @param index     of the person in the filtered person list to add tags.
@@ -62,17 +68,44 @@ public class TagCommand extends Command {
         }
 
         Person personToAddTag = lastShownList.get(index.getZeroBased());
+        originalPerson = personToAddTag;
 
         // merge existing tags with new tags
         Set<Tag> updatedTags = new HashSet<>(personToAddTag.getTags());
         updatedTags.addAll(tagsToAdd);
 
         Person editedPerson = personToAddTag.withTags(updatedTags);
+        updatedPerson = editedPerson;
 
-        model.setPerson(personToAddTag, editedPerson);
+        try {
+            model.setPerson(personToAddTag, editedPerson);
+        } catch (DuplicatePersonException e) {
+            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, tagsToAdd));
+    }
+
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
+    public CommandResult undo(Model model) throws CommandException {
+        requireNonNull(model);
+        if (originalPerson == null || updatedPerson == null) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+
+        try {
+            model.setPerson(updatedPerson, originalPerson);
+        } catch (DuplicatePersonException e) {
+            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson)));
     }
 
     @Override

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -255,5 +257,30 @@ public class TagCommandTest {
                 + "{index=" + INDEX_FIRST_PERSON + ", tagsToAdd=" + tagsToAdd + "}";
 
         assertEquals(expected, tagCommand.toString());
+    }
+
+    @Test
+    public void undo_afterExecute_restoresOriginalPerson() {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Set<Tag> tagsToAdd = Set.of(new Tag("mentor", TagType.ROLE));
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, tagsToAdd);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.addAll(tagsToAdd);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(tagCommand, model, String.format(TagCommand.MESSAGE_SUCCESS, tagsToAdd), expectedAfterExecute);
+
+        Model expectedAfterUndo = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        assertUndoSuccess(tagCommand, model,
+                String.format(TagCommand.MESSAGE_UNDO_SUCCESS, Messages.format(personToEdit)),
+                expectedAfterUndo);
+    }
+
+    @Test
+    public void undo_beforeExecute_throwsCommandException() {
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, Set.of(new Tag("mentor", TagType.ROLE)));
+        assertUndoFailure(tagCommand, model, TagCommand.MESSAGE_UNDO_FAILURE);
     }
 }

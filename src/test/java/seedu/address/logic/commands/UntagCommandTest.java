@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -258,5 +260,32 @@ public class UntagCommandTest {
                 + "{index=" + INDEX_FIRST_PERSON + ", tagsToRemove=" + tagsToRemove + "}";
 
         assertEquals(expected, untagCommand.toString());
+    }
+
+    @Test
+    public void undo_afterExecute_restoresOriginalPerson() {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Tag tagToRemove = personToEdit.getTags().iterator().next();
+        Set<Tag> tagsToRemove = Set.of(tagToRemove);
+        UntagCommand untagCommand = new UntagCommand(INDEX_FIRST_PERSON, tagsToRemove);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.remove(tagToRemove);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(untagCommand, model,
+                String.format(UntagCommand.MESSAGE_SUCCESS, tagsToRemove), expectedAfterExecute);
+
+        Model expectedAfterUndo = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        assertUndoSuccess(untagCommand, model,
+                String.format(UntagCommand.MESSAGE_UNDO_SUCCESS, Messages.format(personToEdit)),
+                expectedAfterUndo);
+    }
+
+    @Test
+    public void undo_beforeExecute_throwsCommandException() {
+        UntagCommand untagCommand = new UntagCommand(INDEX_FIRST_PERSON, Set.of(new Tag("friends", TagType.GENERAL)));
+        assertUndoFailure(untagCommand, model, UntagCommand.MESSAGE_UNDO_FAILURE);
     }
 }
