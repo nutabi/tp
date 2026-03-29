@@ -18,7 +18,7 @@ public class HelpCommand extends Command {
             + "Example: " + COMMAND_WORD + "\n"
             + "Example: " + COMMAND_WORD + " add";
 
-    public static final String SHOWING_HELP_MESSAGE = "Opened help window.";
+    public static final String SHOWING_HELP_MESSAGE = "Opened user guide in browser.";
     public static final String SHOWING_HELP_COMMAND_MESSAGE = "Opening user guide for '%s' command.";
 
     /**
@@ -47,7 +47,7 @@ public class HelpCommand extends Command {
     private final String targetCommand;
 
     /**
-     * Creates a HelpCommand that shows the general help window.
+     * Creates a HelpCommand that opens the user guide in the system default browser.
      */
     public HelpCommand() {
         this.targetCommand = null;
