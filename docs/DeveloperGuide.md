@@ -136,14 +136,57 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2526S2-CS2103T-F11-2/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
 <img src="images/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
-* inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
+* inherits from both `AddressBookStorage` and `UserPrefsStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
+
+**Adapter pattern for JSON serialization**
+
+The `Storage` component uses an adapter pattern to bridge between the domain model and JSON representation. Three adapter classes handle the conversion:
+
+* `JsonSerializableAddressBook` — wraps the entire address book for serialization; its `toModelType()` method converts back to a `ReadOnlyAddressBook`, checking for duplicate persons in the process.
+* `JsonAdaptedPerson` — represents a single `Person` in JSON form. The fields `phone` and `telegramHandle` are optional (nullable); `name` and `email` are required. `toModelType()` validates each field and throws `IllegalValueException` if any value is invalid.
+* `JsonAdaptedTag` — represents a single `Tag`, storing both `tagName` and `tagType`.
+
+**JSON data format**
+
+Data is stored in two JSON files:
+
+* `data/addressbook.json` — contact list:
+  ```json
+  {
+    "addressbook": {
+      "persons": [
+        {
+          "name": "Alex Yeoh",
+          "phone": "87438807",
+          "email": "alexyeoh@example.com",
+          "telegramHandle": "alexyeoh",
+          "tags": [{ "tagName": "cs2103t", "tagType": "COURSE" }]
+        }
+      ]
+    }
+  }
+  ```
+* `preferences.json` — GUI window size/position and the address book file path:
+  ```json
+  {
+    "guiSettings": { "windowWidth": 740.0, "windowHeight": 574.0, "windowCoordinates": { "x": 100, "y": 100 } },
+    "addressBookFilePath": "data/addressbook.json"
+  }
+  ```
+
+**Error handling on startup**
+
+When CampusBridge starts, it attempts to read the address book file and handles three cases:
+* **File not found** — sample data is loaded and the file is created on the next save.
+* **File is malformed or contains invalid data** — an empty address book is used and a warning is logged; the corrupted file is left untouched.
+* **File is valid** — data is loaded normally.
 
 ### Common classes
 
