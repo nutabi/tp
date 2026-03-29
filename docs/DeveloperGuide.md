@@ -166,8 +166,8 @@ Data is stored in two JSON files:
           "name": "Alex Yeoh",
           "phone": "87438807",
           "email": "alexyeoh@example.com",
-          "telegramHandle": "@alexyeoh",
-          "tags": [{ "tagName": "CS2103T", "tagType": "MODULE" }]
+          "telegramHandle": "alexyeoh",
+          "tags": [{ "tagName": "cs2103t", "tagType": "COURSE" }]
         }
       ]
     }
