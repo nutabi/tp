@@ -592,6 +592,56 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
+### Adding a person
+
+1. Adding a person with all fields
+
+    1. Prerequisites: Start with the sample data loaded. Ensure the email and Telegram handle used below do not already exist.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com p/91234567 h/john_doe`<br>
+       Expected: A new contact is added to the list. The success message shows the added person's details.
+
+2. Adding a person with only compulsory fields
+
+    1. Prerequisites: Ensure the email used below does not already exist.
+
+    1. Test case: `add n/Jane Doe e/janedoe@example.com`<br>
+       Expected: A new contact is added without phone number and Telegram handle. The success message shows the added person's details.
+
+3. Adding a person with a non-NUS email
+
+    1. Prerequisites: Ensure the email used below does not already exist.
+
+    1. Test case: `add n/Alex Tan e/alextan@gmail.com`<br>
+       Expected: A new contact is added. A warning is shown indicating that the email is not an NUS domain.
+
+4. Adding a person with duplicate email or Telegram handle
+
+    1. Prerequisites: Add a contact using `add n/Test Person e/testperson@example.com h/test_person`.
+
+    1. Test case: `add n/Another Person e/testperson@example.com`<br>
+       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+
+    1. Test case: `add n/Another Person e/anotherperson@example.com h/test_person`<br>
+       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+
+5. Invalid add commands
+
+    1. Test case: `add n/John Doe`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add e/johndoe@example.com`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add n/John Doe e/invalid-email`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add n/John Doe n/Jane Doe e/johndoe@example.com`<br>
+       Expected: No person is added. Error details shown in the status message indicating duplicate prefixes.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com tg/friend`<br>
+       Expected: No person is added. Error details shown in the status message indicating unexpected extra input.
+
 ### Sorting contacts
 
 1. Sorting by a single field
