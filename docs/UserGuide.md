@@ -62,8 +62,8 @@ CampusBridge is a **desktop app for managing contacts, optimized for use via a C
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `help 123`, it will be interpreted as `help`.
+* Extraneous parameters for commands that do not take in parameters (such as `list`, `exit` and `clear`) will be ignored.<br>
+  e.g. if the command specifies `list 123`, it will be interpreted as `list`.
 
 * Prefixes are case-insensitive.<br>
   e.g. n/NAME and N/NAME are treated the same way.
@@ -81,12 +81,12 @@ CampusBridge supports three tag types, each displayed in a distinct colour:
 | **Course** | Blue | NUS course code associated with the contact | `CS2103T`, `CS2101` |
 | **General** | Red | Any other label | `ProjectMate`, `StudyGroup` |
 
-When adding or editing tags, prefix the tag name with the type:
-* `tr/TAG` — creates a Role tag
-* `tc/TAG` — creates a Course tag
-* `tg/TAG` — creates a General tag
+**Tag prefixes:**
+* `tr/ROLE_TAG` — creates a Role tag
+* `tc/COURSE_TAG` — creates a Course tag
+* `tg/GENERAL_TAG` — creates a General tag
 
-Tag name rules:
+**Tag name rules:**
 * Tags are **case-insensitive**. `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
 
 ### Email validation
@@ -103,7 +103,7 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Each domain label must start and end with alphanumeric characters
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
 
-**Examples:**
+**Examples:**<br/>
 | Email | Valid? |
 |-------|--------|
 | `john.doe@example.com` | (correct domain)
@@ -129,12 +129,14 @@ Non-NUS emails are still accepted, but a warning will be displayed to alert you 
 
 Opens the user guide in the browser, and optionally directly to the section for a specific command.
 
-Format: `help [COMMAND]`
+**Format:** `help [COMMAND]`
 
 Alternatively, press `F1` to open the user guide.
 
-* `COMMAND` is optional. When provided, it must be a valid command name (e.g. `add`, `edit`).
+* `COMMAND` is optional. When provided, it must be a single valid command name (e.g. `add`, `edit`).
 * If `COMMAND` is provided, the user guide is opened at the section for that command.
+* If `COMMAND` is not a recognised command name, an error is shown listing all valid commands.
+* If more than one word is provided (e.g. `help add clear`), an invalid command format error is shown.
 
 Examples:
 * `help` — opens the user guide in the browser.
@@ -146,7 +148,7 @@ Examples:
 
 Adds a person to the address book.
 
-Format: `add n/NAME e/EMAIL [p/PHONE_NUMBER] [h/TELEGRAM_HANDLE]`
+**Format:** `add n/NAME e/EMAIL [p/PHONE_NUMBER] [h/TELEGRAM_HANDLE]`
 
 * `n/NAME` and `e/EMAIL` are required.
 * `p/PHONE_NUMBER` and `h/TELEGRAM_HANDLE` are optional.
@@ -159,7 +161,7 @@ Format: `add n/NAME e/EMAIL [p/PHONE_NUMBER] [h/TELEGRAM_HANDLE]`
 Parameters can be entered in any order, as long as each value is preceded by the correct prefix.
 </div>
 
-Examples:
+**Examples:**
 * `add n/John Doe e/johnd@example.com`
 * `add n/Betsy Crowe e/betsycrowe@example.com p/1234567`
 * `add n/Alex Lim e/alexlim@example.com h/alex_lim123`
@@ -169,7 +171,7 @@ Examples:
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`
+**Format:** `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`
 
 * Edits the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
@@ -182,15 +184,17 @@ Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`
 If the updated email is not an NUS domain (`@u.nus.edu` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
 </div>
 
-Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower h/betsyy` Edits the name of the 2nd person to be `Betsy Crower` and the telegram handle to be `betsyy`.
+**Examples:**
+*  `edit 1 p/91234567 e/johndoe@example.com`<br/>
+Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
+*  `edit 2 n/Betsy Crower h/betsyy`<br/>
+Edits the name of the 2nd person to be `Betsy Crower` and the telegram handle to be `betsyy`.
 
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
 
-Format:
+**Format:**
 * `delete i/INDEX`
   * Deletes the person at the specified `INDEX`.
   * The index refers to the index number shown in the displayed person list.
@@ -206,20 +210,35 @@ Format:
 Only one of `i/INDEX` or `e/EMAIL` can be provided at a time.
 </div>
 
-Examples:
-* Delete by index
-  * `list` followed by `delete i/2` deletes the 2nd person in the address book.
-  * `find n/Betsy` followed by `delete i/1` deletes the 1st person in the results of the `find` command.
-
-* Delete by email
-  * `list` followed by `delete e/betsy@example.com` deletes the person with email `betsy@example.com` in the address book.
-  * `find n/Betsy` followed by `delete e/BETSY@example.com` deletes the person with email `BETSY@example.com` in the results of the `find` command (case-insensitive match also works).
+**Examples:**
+* Delete by index:
+  * ```
+    list
+    delete i/2
+    ```
+    Deletes the 2nd person in the address book.
+  * ```
+    find n/Betsy
+    delete i/1
+    ```
+    Deletes the 1st person in the results of the `find` command.
+* Delete by email:
+  * ```
+    list
+    delete e/betsy@example.com
+    ```
+    Deletes the person with email `betsy@example.com` in the address book.
+  * ```
+    find n/Betsy
+    delete e/BETSY@example.com
+    ```
+    Deletes the person with email `BETSY@example.com` in the results of the `find` command (case-insensitive match also works).
 
 ### Tagging a person : `tag`
 
 Adds one or more tags to an existing person in the address book.
 
-Format: `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
+**Format:** `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
 
 * Adds tags to the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
@@ -228,7 +247,7 @@ Format: `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…
 * Tag matching is **case-insensitive**. e.g. `friends` and `FRIENDS` are considered the same.
 * Duplicate tags will not be added again.
 
-Constraints:
+**Constraints:**
 * The index **must be a positive integer** 1, 2, 3, …​
 * Tag names must be **alphanumeric** (no space or symbols).
 * At least one of the optional fields must be provided.
@@ -237,21 +256,21 @@ Constraints:
 Obtain the index by using: `list` command to display all persons or `find` command to filter the persons.
 </div>
 
-Examples:
-* `tag 1 tg/friends`
+**Examples:**
+* `tag 1 tg/friends`<br/>
 Adds the `friends` general tag to the 1st person in the displayed list.
 
-* `tag 2 tr/tutor tc/cs2103 tg/helpful`
+* `tag 2 tr/tutor tc/cs2103 tg/helpful`<br/>
 Adds the `tutor` role tag, `cs2103` course tag and `helpful` general tag to the 2nd person in the displayed list.
 
-* `tag 3 tg/friends tg/groupmates`
+* `tag 3 tg/friends tg/groupmates`<br/>
 Adds both `friends` and `groupmates` general tags to the 3rd person in the displayed list.
 
 ### Untagging a person : `untag`
 
 Removes one or more tags from an existing person in the address book.
 
-Format: `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
+**Format:** `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
 
 * Removes the specified tags from the person at the given `INDEX`.
 * The index refers to the index number shown in the displayed person list.
@@ -261,11 +280,11 @@ Format: `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]�
 * Tag matching is **case-insensitive**. e.g. `friends` and `FRIENDS` are considered the same.
 * Duplicate tags in the command will be ignored.
 
-Partial removal behavior:
+**Partial removal behavior:**
 * If some tags exist and others don't, the existing ones will be removed and a message will show which tags were not found.
 * If none of the specified tags exist, an error message will be shown and no changes will be made.
 
-Constraints:
+**Constraints:**
 * The index **must be a positive integer** 1, 2, 3, …​
 * Tag names must be **alphanumeric** (no space or symbols).
 * At least one of the optional fields must be provided.
@@ -274,28 +293,28 @@ Constraints:
 Obtain the index by using: `list` command to display all persons or `find` command to filter the persons.
 </div>
 
-Examples:
-* `untag 1 tg/friends`
+**Examples:**
+* `untag 1 tg/friends`<br/>
 Removes the `friends` general tag from the 1st person in the list.
 
-* `untag 2 tr/tutor tc/cs2103 tg/classmates`
+* `untag 2 tr/tutor tc/cs2103 tg/classmates`<br/>
 Removes the `tutor` role tag, `cs2103` course tag and `classmates` general tag from the 2nd person in the list.
 
-* `untag 3 tc/cs2103 tc/cs2109`
+* `untag 3 tc/cs2103 tc/cs2109`<br/>
 Removes both `cs2103` and `cs2109` course tags from the 3rd person in the list.
 
 ### Clearing tags from a person : `cleartag`
 
 Clears all tags of a specific type from an existing person in the address book.
 
-Format: `cleartag INDEX [tr/] or [tc/] or [tg/]`
+**Format:** `cleartag INDEX [tr/] or [tc/] or [tg/]`
 
 * Clears all tags of the specified type from the person at the given `INDEX`.
 * The index refers to the index number shown in the displayed person list.
 * Only one tag type can be cleared at a time.
 * Only tags of the specified type will be removed. Tags of other types remain unchanged.
 
-Constraints:
+**Constraints:**
 * The index **must be a positive integer** 1, 2, 3, …​
 * **Exactly one tag type prefix** must be provided.
 
@@ -303,18 +322,18 @@ Constraints:
 Obtain the index by using: `list` command to display all persons or `find` command to filter the persons.
 </div>
 
-Examples:
-* `cleartag 1 tg/`
+**Examples:**
+* `cleartag 1 tg/`<br/>
 Clears all general tags from the 1st person in the displayed list.
 
-* `cleartag 2 tr/`
+* `cleartag 2 tr/`<br/>
 Clears all role tags from the 2nd person in the displayed list.
 
 ### Listing all persons : `list`
 
 Shows a list of all persons in the address book.
 
-Format: `list`
+**Format:** `list`
 
 Alternatively, press `F2` to list all contacts.
 
@@ -322,7 +341,7 @@ Alternatively, press `F2` to list all contacts.
 
 Sorts the list of persons by the specified field.
 
-Format: `sort o/ORDER [r/]`
+**Format:** `sort o/ORDER [r/]`
 
 * `ORDER` is case-insensitive. e.g. `NAME` is treated the same as `name`
 * The `r/` flag is optional. When included, the sort order is reversed.
@@ -337,27 +356,27 @@ Format: `sort o/ORDER [r/]`
   e.g. `sort o/phone` produces `81234567`, `91234567`, then persons with no phone
 * **`none`** — resets the list to its default (insertion) order.
 
-Examples:
-* `sort o/name`
-  Sorts all persons alphabetically by name (A–Z).
+**Examples:**
+* `sort o/name`<br/>
+Sorts all persons alphabetically by name (A–Z).
 
-* `sort o/name r/`
-  Sorts all persons in reverse alphabetical order by name (Z–A).
+* `sort o/name r/`<br/>
+Sorts all persons in reverse alphabetical order by name (Z–A).
 
-* `sort o/email`
-  Sorts all persons alphabetically by email address.
+* `sort o/email`<br/>
+Sorts all persons alphabetically by email address.
 
-* `sort o/phone r/`
-  Sorts all persons in reverse lexicographic order by phone number.
+* `sort o/phone r/`<br/>
+Sorts all persons in reverse lexicographic order by phone number.
 
-* `sort o/none`
-  Resets the list to its default order.
+* `sort o/none`<br/>
+Resets the list to its default order.
 
 ### Locating persons by name/email/tag : `find`
 
 Finds persons whose names, emails, or tags match the given keywords.
 
-Format: `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`
+**Format:** `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`
 
 * At least one of `n/`, `e/`, or `t/` must be present.
 * The search is case-insensitive for all fields. e.g. `hans` will match `Hans`
@@ -373,41 +392,40 @@ Format: `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`
 * Different fields are combined using **AND**.
   e.g. `n/Alex e/gmail` will match persons whose name contains `Alex` **and** email contains `gmail`
 
-Examples:
-* `find n/John`
-  Returns all persons whose names contain `John`
+**Examples:**
+* `find n/John`<br/>
+Returns all persons whose names contain `John`
 
-* `find e/gmail`
-  Returns all persons whose emails contain `gmail`
+* `find e/gmail`<br/>
+Returns all persons whose emails contain `gmail`
 
-* `find t/friends`
-  Returns all persons tagged with `friends`
+* `find t/friends`<br/>
+Returns all persons tagged with `friends`
 
-* `find n/alex e/u.nus.edu`
-  Returns persons whose name contains `alex` **and** email contains `u.nus.edu`
+* `find n/alex e/u.nus.edu`<br/>
+Returns persons whose name contains `alex` **and** email contains `u.nus.edu`
 
-* `find n/alex t/friends`
-  Returns persons whose name contains `alex` **and** are tagged with `friends`
+* `find n/alex t/friends`<br/>
+Returns persons whose name contains `alex` **and** are tagged with `friends`
 
-* `find n/alex e/nus t/friends`
-  Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`
+* `find n/alex e/nus t/friends`<br/>
+Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`
 
-* `find n/alex david`
-  Returns persons whose name contains `alex` **or** `david`
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `find n/alex david`<br/>
+Returns persons whose name contains `alex` **or** `david`
+![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Undoing the last action : `undo`
 
 Reverts the most recent **undoable command** executed.
 
-Format: `undo`
+**Format:** `undo`
 
 * Undoes the last executed command that supports undo.
 * Multiple undo operations can be performed consecutively, up to the number of undoable commands previously executed.
 * If there are no commands to undo, an error message will be shown.
 
-Undoable commands:
-
+**Undoable commands:**
 ```
 add
 delete
@@ -423,37 +441,31 @@ Commands that are not listed above **cannot be undone**.
 You can repeatedly use `undo` to step backwards through your previous changes.
 </div>
 
-Examples:
-
-```
-add n/John Doe e/john@example.com
-undo
-```
+**Examples:**
+* ```
+  add n/John Doe e/john@example.com
+  undo
+  ```
   Reverts the addition of John Doe.
-
-```
-delete i/2
-undo
-```
+* ```
+  delete i/2
+  undo
+  ```
   Restores the previously deleted person.
-
-```
-edit 1 n/Alex Tan
-undo
-```
+* ```
+  edit 1 n/Alex Tan
+  undo
+  ```
   Restores the original details of the 1st person.
-
-```
-clear
-undo
-```
+* ```
+  clear
+  undo
+  ```
   Restores all previously deleted contacts.
-
-```
-undo
-```
-  (when no more commands to undo)
-  Shows an error message indicating that there are no actions to undo.
+* ```
+  undo
+  ```
+  When no more commands to undo, an error message will be shown indicating that there are no actions to undo.
 
 ### Navigating command history
 
@@ -462,7 +474,7 @@ Previously entered commands can be recalled using the keyboard.
 * Press the **Up arrow** key to go back to an earlier command.
 * Press the **Down arrow** key to go forward to a more recent command.
 
-Examples:
+**Examples:**
 * After running `add n/John Doe e/john@example.com`, press **Up** to recall it and modify it.
 * After running several commands, press **Up** repeatedly to scroll back through them.
 
@@ -470,13 +482,13 @@ Examples:
 
 Clears all entries from the address book.
 
-Format: `clear`
+**Format:** `clear`
 
 ### Exiting the program : `exit`
 
 Exits the program.
 
-Format: `exit`
+**Format:** `exit`
 
 Alternatively, press `F3` to exit the application.
 
@@ -520,6 +532,7 @@ Action | Format, Examples
 **Cleartag** | `cleartag INDEX [tr/] or [tc/] or [tg/]` <br> e.g., `cleartag 1 tg/`
 **Delete** | `delete i/INDEX OR delete e/EMAIL`<br> e.g., `delete i/3 OR delete e/jameslee@example.com `
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com h/jlee01`
+**Exit** | `exit`
 **Find** | `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`<br> e.g., `find n/alex e/gmail t/friends`
 **Help** | `help [COMMAND]`<br> e.g., `help`, `help add`, `help sort`
 **List** | `list`
@@ -527,13 +540,12 @@ Action | Format, Examples
 **Tag** | `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `tag 1 tg/friends tc/cs2103`
 **Untag** | `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `untag 3 tr/tutor tc/cs2103`
 **Undo** | `undo`
-**Exit** | `exit`
 
 ## Keyboard shortcuts summary
 
 Action | Shortcut
 --------|----------
+**Clear input box** | `Delete`
+**Exit application** | `F3`
 **Help** | `F1`
 **List all contacts** | `F2`
-**Exit application** | `F3`
-**Clear input box** | `Delete`
