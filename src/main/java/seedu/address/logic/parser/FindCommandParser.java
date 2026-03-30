@@ -1,12 +1,15 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
+import static seedu.address.logic.parser.CliSyntax.NON_FIND_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -25,7 +28,18 @@ public class FindCommandParser implements Parser<FindCommand> {
     public FindCommand parse(String args) throws ParseException {
         // ArgumentTokenizer recognizes prefixes only when preceded by whitespace.
         // Add a leading space so first prefix at start of argument string is recognized.
-        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(" " + args,
+        String leadingSpacedArgs = args.startsWith(" ") ? args : " " + args;
+        assert leadingSpacedArgs.startsWith(" ") : "Input should start with a space for prefix recognition";
+
+        // Check for any disallowed prefixes
+        Optional<String> unexpectedInput = ParserUtil.findUnexpectedExtraInput(leadingSpacedArgs,
+                NON_FIND_COMMAND_PREFIXES);
+        if (unexpectedInput.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT,
+                    unexpectedInput.get()));
+        }
+
+        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs,
                 PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
 
         List<String> nameKeywords = parseKeywords(argumentMultimap, PREFIX_NAME);
