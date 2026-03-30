@@ -55,7 +55,7 @@ public class NameEmailTagPredicateTest {
         // null -> returns false
         assertFalse(firstPredicate.equals(null));
 
-        // different persons -> returns false
+        // different predicates -> returns false
         assertFalse(firstPredicate.equals(secondPredicate));
 
         // different emails -> returns false

@@ -66,7 +66,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of("FRIENDS"));
 
-        // 你的实现用了 toLowerCase → 应该匹配成功
+        // Input tags are normalized to lowercase, so matching is case-insensitive.
         assertTrue(predicate.test(ALICE));
     }
 
@@ -75,7 +75,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of());
 
-        // anyMatch over empty set → 永远 false
+        // anyMatch over an empty keyword list always returns false.
         assertFalse(predicate.test(ALICE));
     }
 

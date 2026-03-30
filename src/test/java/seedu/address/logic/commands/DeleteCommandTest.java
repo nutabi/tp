@@ -161,7 +161,7 @@ public class DeleteCommandTest {
         // null -> returns false
         assertFalse(deleteFirstIndex.equals(null));
 
-        // different person -> returns false
+        // different index -> returns false
         assertFalse(deleteFirstIndex.equals(deleteSecondIndex));
 
         // index vs email -> returns false
