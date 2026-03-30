@@ -1,12 +1,14 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.NON_FIND_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -17,12 +19,22 @@ import seedu.address.model.person.NameEmailTagPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
 
+    private static final String MESSAGE_UNEXPECTED_EXTRA_INPUT =
+            "Unexpected extra inputs in find command: '%s'\n%s";
+
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
      * and returns a FindCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public FindCommand parse(String args) throws ParseException {
+        // Check for any disallowed prefixes
+        Optional<String> unexpectedInput = Parser.findUnexpectedExtraInput(args, NON_FIND_COMMAND_PREFIXES);
+        if (unexpectedInput.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT,
+                    unexpectedInput.get(), FindCommand.MESSAGE_USAGE));
+        }
+
         // ArgumentTokenizer recognizes prefixes only when preceded by whitespace.
         // Add a leading space so first prefix at start of argument string is recognized.
         ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(" " + args,
