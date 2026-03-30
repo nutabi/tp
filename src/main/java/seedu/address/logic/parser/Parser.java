@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import seedu.address.logic.commands.Command;
@@ -36,7 +37,8 @@ public interface Parser<T extends Command> {
     }
 
     private static int findPrefixPosition(String args, Prefix prefix) {
-        int prefixIndex = args.indexOf(" " + prefix.getPrefix());
+        int prefixIndex = args.toLowerCase(Locale.ROOT)
+                .indexOf(" " + prefix.getPrefix().toLowerCase(Locale.ROOT));
         return prefixIndex == -1 ? -1 : prefixIndex + 1;
     }
 
