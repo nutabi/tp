@@ -3,7 +3,9 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
@@ -374,5 +376,34 @@ public class ParserUtilTest {
         Optional<String> result = ParserUtil.findUnexpectedExtraInput(args, DISALLOWED_PREFIXES);
         assertTrue(result.isPresent());
         assertEquals("p/123", result.get());
+    }
+
+    @Test
+    public void findEmptyPrefixValues_noEmptyPrefixValues_returnsEmptyOptional() {
+        String args = " n/Alice p/12345";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE);
+        Optional<String> result = ParserUtil.findEmptyPrefixValues(argMultimap, PREFIX_NAME, PREFIX_PHONE);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void findEmptyPrefixValues_oneEmptyPrefixValue_returnsNonEmptyOptional() {
+        String args = " p/";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE);
+        Optional<String> result = ParserUtil.findEmptyPrefixValues(argMultimap, PREFIX_NAME, PREFIX_PHONE);
+
+        assertTrue(result.isPresent());
+        assertEquals(PREFIX_PHONE.getPrefix(), result.get());
+    }
+
+    @Test
+    public void findEmptyPrefixValues_mixOfEmptyAndNonPrefixValue_returnsNonEmptyOptional() {
+        String args = " n/john p/";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE);
+        Optional<String> result = ParserUtil.findEmptyPrefixValues(argMultimap, PREFIX_NAME, PREFIX_PHONE);
+
+        assertTrue(result.isPresent());
+        assertEquals(PREFIX_PHONE.getPrefix(), result.get());
     }
 }
