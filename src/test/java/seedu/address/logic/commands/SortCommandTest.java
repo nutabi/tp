@@ -150,6 +150,18 @@ public class SortCommandTest {
     }
 
     @Test
+    public void execute_sortByPhoneReversed_nullPhoneLast() throws CommandException {
+        Model freshModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person noPhone = new Person(new Name("Zara Zara"), null, new Email("zara@example.com"), new HashSet<>());
+        freshModel.addPerson(noPhone);
+
+        new SortCommand("phone", true).execute(freshModel);
+
+        List<Person> sorted = (List<Person>) freshModel.getFilteredPersonList();
+        assertEquals(noPhone, sorted.get(sorted.size() - 1));
+    }
+
+    @Test
     public void toStringMethod() {
         SortCommand command = new SortCommand("name", false);
         String str = command.toString();
