@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CliSyntax.NON_FIND_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -42,10 +43,16 @@ public class FindCommandParser implements Parser<FindCommand> {
         ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs,
                 PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
 
+        // Check for any prefixes with no value eg. "find n/john e/ t/
+        Optional<String> emptyPrefix = findEmptyPrefixValues(argumentMultimap,
+                PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
+        if (emptyPrefix.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_PREFIX_WITH_NO_INPUT, emptyPrefix.get()));
+        }
+
+        // parse keywords for name, email and tags. Keywords for each field are split by whitespace.
         List<String> nameKeywords = parseKeywords(argumentMultimap, PREFIX_NAME);
-
         List<String> emailKeywords = parseKeywords(argumentMultimap, PREFIX_EMAIL);
-
         List<String> tags = parseKeywords(argumentMultimap, PREFIX_TAG);
 
         // Throw exception if preamble is not empty, eg "find alice n/bob"
@@ -79,5 +86,23 @@ public class FindCommandParser implements Parser<FindCommand> {
                 .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
                 .filter(keyword -> !keyword.isBlank())
                 .toList();
+    }
+
+    private static Optional<String> findEmptyPrefixValues(
+            ArgumentMultimap argMultimap,
+            Prefix... prefixes) {
+
+        for (Prefix prefix : prefixes) {
+            // Only validate if the prefix is actually present
+            if (!argMultimap.getAllValues(prefix).isEmpty()) {
+                for (String value : argMultimap.getAllValues(prefix)) {
+                    if (value.trim().isEmpty()) {
+                        return Optional.of(prefix.getPrefix());
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 }
