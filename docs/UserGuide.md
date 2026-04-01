@@ -380,18 +380,24 @@ Finds persons whose names, emails, or tags match the given keywords.
 
 * At least one of `n/`, `e/`, or `t/` must be present.
 * The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
-* The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh.
-* Keyword matching ignores tokens that are only punctuation (e.g., `.` or `#`), but tokens containing letters with minor punctuation (e.g., `"C."` or `"Robert#"`) are still considered valid.
+* The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh`.
+* Keywords consisting **only of special characters** are not allowed (e.g., `.`, `#`, `!@#`). If you provide such a keyword, an error message will be shown.
+* Keywords containing both letters and special characters are valid (e.g., `"Dr."`, `"J."`), but special characters are ignored during name processing.
 
 **Matching behavior:**
-* **Name** and **email** use substring matching.
-  e.g. `Jo` will match `John` and `Alice Johnson`.
+* **Name keywords** use both exact substring matching and fuzzy matching (typo-tolerant):
+  * Exact match: `Jo` will match `John` and `Alice Johnson`.
+  * Fuzzy match: `jon` will also match `John` (handles typos like missing or swapped letters).
+  * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
+  * Special characters in names are ignored during processing. e.g. searching for `"Robert"` will match names like `"Robert-Smith"` or `"O'Robert"`.
+* **Email keywords** use exact substring matching.
+  e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
 * **Tags** use exact matching.
   e.g. `cs2103` will match tag `cs2103` but not `cs210`.
 * Multiple keywords within the same field are combined using **OR**.
   e.g. `n/Alex David` will match `Alex Yeoh` or `David Li`.
 * Different fields are combined using **AND**.
-  e.g. `n/Alex e/gmail` will match persons whose name contains `Alex` **and** email contains `gmail`.
+  e.g. `n/Alex e/gmail` will match persons whose name matches `Alex` **and** email contains `gmail`.
 * Repeated same-field prefixes are allowed.
   e.g. `find n/Alex n/David` behaves the same as `find n/Alex David`.
 * Empty prefixes are not allowed.
@@ -399,25 +405,31 @@ Finds persons whose names, emails, or tags match the given keywords.
 
 **Examples:**
 * `find n/John`<br/>
-Returns all persons whose names contain `John`.
+Returns all persons whose names **match** `John` (with fuzzy matching support).
+
+* `find n/jon`<br/>
+Returns all persons whose names **match** `jon` (with fuzzy matching support).
+
+* `find n/alice david`<br/>
+Returns persons whose name **matches** `alice` **or** `david` (with fuzzy matching support).
 
 * `find e/gmail`<br/>
-Returns all persons whose emails contain `gmail`.
+Returns all persons whose emails **contain** `gmail`.
 
 * `find t/friends`<br/>
 Returns all persons tagged with `friends`.
 
 * `find n/alex e/u.nus.edu`<br/>
-Returns persons whose name contains `alex` **and** email contains `u.nus.edu`.
+Returns persons whose name **matches** `alex` **and** email **contains** `u.nus.edu`.
 
 * `find n/alex t/friends`<br/>
-Returns persons whose name contains `alex` **and** are tagged with `friends`.
+Returns persons whose name **matches** `alex` **and** are tagged with `friends`.
 
 * `find n/alex e/nus t/friends`<br/>
-Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`.
+Returns persons whose name **matches** `alex` **and** email **contains** `nus` **and** are tagged with `friends`.
 
 * `find n/alex david`<br/>
-Returns persons whose name contains `alex` **or** `david`.
+Returns persons whose name **matches** `alex` **or** `david`.
 ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Undoing the last action : `undo`
