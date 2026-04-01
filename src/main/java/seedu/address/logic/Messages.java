@@ -37,6 +37,9 @@ public class Messages {
     public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
     public static final String MESSAGE_UNEXPECTED_EXTRA_INPUT =
             "Invalid command format! \nUnexpected extra input detected: '%s'.";
+    public static final String MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS =
+            "Invalid keyword detected for prefix %s: '%s' contains only special characters. "
+            + "Keywords must contain at least one alphanumeric character.";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
