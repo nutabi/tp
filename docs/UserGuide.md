@@ -308,7 +308,7 @@ Removes the `tutor` role tag, `cs2103` course tag and `classmates` general tag f
 * `untag 3 tc/cs2103 tc/cs2109`<br/>
 Removes both `cs2103` and `cs2109` course tags from the 3rd person in the list.
 
-### Clearing tags from a person : `cleartag`
+### Clearing tags of a specific type from a person : `cleartag`
 
 Clears all tags of a specific type from an existing person in the address book.
 
