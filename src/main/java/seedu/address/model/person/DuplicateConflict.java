@@ -8,12 +8,4 @@ public enum DuplicateConflict {
     EMAIL,
     TELEGRAM_HANDLE,
     EMAIL_AND_TELEGRAM_HANDLE;
-
-    public boolean hasEmailConflict() {
-        return this == EMAIL || this == EMAIL_AND_TELEGRAM_HANDLE;
-    }
-
-    public boolean hasTelegramHandleConflict() {
-        return this == TELEGRAM_HANDLE || this == EMAIL_AND_TELEGRAM_HANDLE;
-    }
 }

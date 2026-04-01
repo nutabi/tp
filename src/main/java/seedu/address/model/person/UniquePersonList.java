@@ -179,8 +179,12 @@ public class UniquePersonList implements Iterable<Person> {
                 continue;
             }
 
-            hasDuplicateEmail |= existingPerson.hasSameEmail(toCheck);
-            hasDuplicateTelegramHandle |= existingPerson.hasSameTelegramHandle(toCheck);
+            if (existingPerson.hasSameEmail(toCheck)) {
+                hasDuplicateEmail = true;
+            }
+            if (existingPerson.hasSameTelegramHandle(toCheck)) {
+                hasDuplicateTelegramHandle = true;
+            }
 
             if (hasDuplicateEmail && hasDuplicateTelegramHandle) {
                 return DuplicateConflict.EMAIL_AND_TELEGRAM_HANDLE;
