@@ -621,7 +621,6 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `help add extra`<br>
        Expected: Same as above. Only a single command name is accepted; extra words cause a format error.
 
-
 ### Adding a person
 
 1. Adding a person with all fields
@@ -752,23 +751,6 @@ testers are expected to do more *exploratory* testing.
    1. Press **Up** once.<br>
       Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
 
-### Deleting a person
-
-1. Deleting a person while all persons are being shown
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
-
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
-
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
-
 ### Sorting persons
 
 1. Sorting by a valid field
@@ -814,51 +796,6 @@ testers are expected to do more *exploratory* testing.
 
    1. Test case: `sort o/name o/email`<br>
       Expected: List is not sorted. Error details shown in the status message indicating duplicate `o/` prefix.
-
-### Navigating command history
-
-1. Navigating to previous commands
-
-   1. Prerequisites: Execute at least two commands, e.g. `list` then `help`.
-
-   1. Press the <kbd>↑</kbd> (Up) arrow key while the command box is focused.<br>
-      Expected: The most recently executed command (`help`) appears in the command box.
-
-   1. Press <kbd>↑</kbd> again.<br>
-      Expected: The earlier command (`list`) appears in the command box.
-
-   1. Press <kbd>↑</kbd> when already at the oldest command.<br>
-      Expected: Nothing happens. Navigation stops at the oldest entry.
-
-1. Navigating forward through history
-
-   1. Prerequisites: Navigate back through history using <kbd>↑</kbd> as above.
-
-   1. Press the <kbd>↓</kbd> (Down) arrow key.<br>
-      Expected: The next more recent command appears in the command box.
-
-   1. Press <kbd>↓</kbd> until past the most recent command.<br>
-      Expected: The command box is cleared (shows an empty input field), ready for a new command.
-
-   1. Press <kbd>↓</kbd> when already at the empty new-command position.<br>
-      Expected: Nothing happens.
-
-1. Empty commands and history
-
-   1. Prerequisites: Clear the command box and press Enter without typing anything.
-
-   1. Press <kbd>↑</kbd>.<br>
-      Expected: The last non-empty command appears. The empty submission was not added to history.
-
-1. Clearing the command box
-
-   1. While the command box contains any text, press the <kbd>Delete</kbd> key.<br>
-      Expected: The command box is cleared immediately. This does not affect command history.
-
-1. History is session-only
-
-   1. Execute several commands, then close and relaunch the app.<br>
-      Expected: Press <kbd>↑</kbd> — no history is available. History is not persisted across sessions.
 
 ### Saving data
 
