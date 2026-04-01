@@ -71,11 +71,11 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
         return keywords.stream()
                 .map(StringUtil::normalize)
-                .anyMatch(keyword -> matchesAnyToken(keyword, nameTokens));
+                .anyMatch(keyword -> matchesAnyToken(nameTokens, keyword));
     }
 
-    private boolean matchesAnyToken(String keyword, String[] tokens) {
-        for (String token : tokens) {
+    private boolean matchesAnyToken(String[] nameTokens, String keyword) {
+        for (String token : nameTokens) {
             if (token.contains(keyword)) {
                 return true;
             }
