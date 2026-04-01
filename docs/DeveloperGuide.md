@@ -479,11 +479,11 @@ Use case ends.
 
 #### Use Case: UC06 - Add a tag to an existing contact
 
-**Preconditions: Application is running**
+**Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
-1. User requests to tag a contact in the list.
-2. User provides tag details for that contact.
+1. User <ins>requests to list contacts (UC04)</ins>.
+2. User requests to tag a contact, providing the contact's index and tag type.
 3. CampusBridge validates the input.
 4. CampusBridge adds the tag and updates the contact list.
 5. CampusBridge shows a success message.
