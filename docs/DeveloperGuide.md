@@ -213,6 +213,9 @@ When an undo command is called, the deque will peek at the first item to be out.
 
 If the undo of the command is successfully executed, the deque will pop.
 
+Here is the sequence UML diagram:![UndoSequenceDiagram-Logic.png]
+Note: Undo methods in commands now directly calls methods in Model to revert the changes.
+
 More UML diagrams are to be added in a later.
 
 #### Design considerations:
