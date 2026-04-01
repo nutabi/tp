@@ -563,7 +563,7 @@ Action | Format, Examples
 
 ## Keyboard Shortcuts Summary
 
-### Windows
+### Windows / Linux
 
 Action | Shortcut
 --------|----------
