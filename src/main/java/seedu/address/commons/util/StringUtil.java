@@ -66,6 +66,7 @@ public class StringUtil {
         }
     }
 
+
     /**
      * Computes the Levenshtein distance between two strings.
      *
@@ -118,4 +119,45 @@ public class StringUtil {
 
         return dpMatrix[n][m];
     }
+
+    /**
+     * Returns true if the {@code query} matches the {@code word} using fuzzy matching.
+     *
+     * <p>Fuzzy matching uses Levenshtein/edit distance to allow approximate matches.
+     * The method returns true if the Levenshtein/edit distance between the query and word
+     * is less than or equal to the specified threshold.</p>
+     *
+     * <p>This is useful for typo-tolerant searches. For example, with a threshold of 2,
+     * "john" would match "joan" or "jhon".</p>
+     *
+     * <p>The matching is case-insensitive.</p>
+     *
+     * @param query the search query string (will be trimmed)
+     * @param word the word to match against (will be trimmed)
+     * @param threshold the maximum Levenshtein distance allowed for a match
+     * @return true if the words match within the threshold, false otherwise
+     * @throws NullPointerException if {@code query} or {@code word} is {@code null}
+     * @throws IllegalArgumentException if {@code threshold} is negative
+     */
+    public static boolean matchesFuzzy(String query, String word, int threshold) {
+        requireNonNull(query, "Query cannot be null");
+        requireNonNull(word, "Word cannot be null");
+        checkArgument(threshold >= 0, "Threshold cannot be negative");
+
+        // Normalize inputs by trimming whitespace
+        String trimmedQuery = query.trim();
+        String trimmedWord = word.trim();
+
+        // Handle empty strings after trimming
+        if (trimmedQuery.isEmpty() || trimmedWord.isEmpty()) {
+            // Empty query should not match non-empty word and vice versa
+            // except when both are empty (distance = 0)
+            return trimmedQuery.isEmpty() && trimmedWord.isEmpty();
+        }
+
+        // Calculate Levenshtein distance and check if within threshold
+        int distance = levenshteinDistance(trimmedQuery, trimmedWord);
+        return distance <= threshold;
+    }
+
 }
