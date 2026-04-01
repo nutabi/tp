@@ -49,15 +49,6 @@ public class StringUtil {
      * </ul>
      * </p>
      *
-     * <p>Examples:
-     * <pre>
-     *   normalize("John Doe") = "john doe"
-     *   normalize("Test@123#") = "test123"
-     *   normalize("Hello-World!") = "helloworld"
-     *   normalize("abc 123 XYZ") = "abc 123 xyz"
-     * </pre>
-     * </p>
-     *
      * <p>This is useful for fuzzy matching, search preprocessing, or comparing names
      * that may contain special characters or inconsistent casing.</p>
      *
