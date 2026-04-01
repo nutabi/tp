@@ -330,6 +330,11 @@ Use case ends.
 
   Use case ends.
 
+* 3c. Telegram handle already exists in the contact list.
+  * 3c1. CampusBridge shows a failure message indicating that the Telegram handle already exists.
+
+  Use case ends.
+
 * 4a. Contact cannot be added.
     * 4a1. CampusBridge shows an error message indicating the contact could not be added.
 
