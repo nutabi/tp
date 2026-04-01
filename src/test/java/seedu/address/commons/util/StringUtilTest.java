@@ -124,6 +124,31 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsWordIgnoreCase("AAA bBb ccc  bbb", "bbB"));
     }
 
+    //---------------- Tests for normalize ----------------------------------------
+    @Test
+    public void normalize_nullGiven_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.normalize(null));
+    }
+
+    @Test
+    public void normalize_validString_returnsNormalizedString() {
+        // all lowercase
+        assertEquals("bob", StringUtil.normalize("bob"));
+
+        // Mixed cases
+        assertEquals("bob", StringUtil.normalize("bOb"));
+
+        // Lowercase String with non-alphanumeric characters
+        assertEquals("bob c prim", StringUtil.normalize("bob c. prim"));
+        assertEquals("bob hi", StringUtil.normalize("bob hi."));
+
+        // Mixed case String with non-alphanumeric characters
+        assertEquals("bob c prim", StringUtil.normalize("bob C. PrIm"));
+
+        // String with all punctuation
+        assertEquals("", StringUtil.normalize("#$%^&*()"));
+    }
+
     //---------------- Tests for getDetails --------------------------------------
 
     /*
@@ -414,4 +439,6 @@ public class StringUtilTest {
         assertFalse(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 0));
         assertTrue(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 1)); // 1 deletion
     }
+
+    //
 }

@@ -39,6 +39,17 @@ public class StringUtil {
     }
 
     /**
+     * Normalizes the input string by converting it to lowercase and removing all non-alphanumeric characters
+     * except for whitespace.
+     */
+    public static String normalize(String s) {
+        requireNonNull(s);
+
+        return s.toLowerCase()
+                .replaceAll("[^a-z0-9\\s]", "");
+    }
+
+    /**
      * Returns a detailed message of the t, including the stack trace.
      */
     public static String getDetails(Throwable t) {

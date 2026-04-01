@@ -2,7 +2,6 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,7 +13,7 @@ import seedu.address.commons.util.ToStringBuilder;
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
-    private static final int MIN_EDIT_RATIO = 1;
+    private static final int MIN_ALLOWED_EDITS = 1;
     private static final double EDIT_DISTANCE_RATIO = 0.2;
 
     private final List<String> keywords;
@@ -33,25 +32,33 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         // Split name based on white spaces
-        String[] nameTokens = person.getName().fullName
-                .replaceAll("[^a-zA-Z0-9\\s]", "") // Remove punctuation
-                .toLowerCase()
+        String[] nameTokens = StringUtil.normalize(person.getName().fullName)
                 .split("\\s+");
 
         return keywords.stream()
-                .map(keyword -> keyword.toLowerCase()
-                        .replaceAll("[^a-zA-Z0-9\\s]", "")) // Remove punctuation
-                .anyMatch(keyword -> Arrays.stream(nameTokens)
-                        .anyMatch(token -> {
-                            // Use substring matching first for efficiency
-                            if (token.contains(keyword)) {
-                                return true;
-                            }
+                .map(StringUtil::normalize)
+                .anyMatch(keyword -> matchesAnyToken(keyword, nameTokens));
+    }
 
-                            // Fallback to fuzzy matching if no direct match is found
-                            int threshold = Math.max(MIN_EDIT_RATIO, (int) (keyword.length() * EDIT_DISTANCE_RATIO));
-                            return StringUtil.matchesFuzzy(token, keyword, threshold);
-                        }));
+    private boolean matchesAnyToken(String keyword, String[] tokens) {
+        for (String token : tokens) {
+            if (token.contains(keyword)) {
+                return true;
+            }
+
+            if (isFuzzyMatch(token, keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isFuzzyMatch(String token, String keyword) {
+        int threshold = Math.max(MIN_ALLOWED_EDITS,
+                (int) (keyword.length() * EDIT_DISTANCE_RATIO));
+
+        return StringUtil.matchesFuzzy(token, keyword, threshold);
     }
 
     @Override
