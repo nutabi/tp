@@ -122,8 +122,8 @@ Non-NUS emails are still accepted, but a warning will be displayed to alert you 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `list`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `list 123`, it will be interpreted as `list`.
+* Commands that do not take parameters (such as `list`, `exit` and `clear`) will show an error if extra arguments are provided.<br>
+  e.g. `list 123` will result in an error instead of being interpreted as `list`.
 
 * Prefixes are case-insensitive.<br>
   e.g. n/NAME and N/NAME are treated the same way.
