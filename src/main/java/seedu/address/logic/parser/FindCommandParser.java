@@ -84,8 +84,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         return argumentMultimap.getAllValues(prefix)
                 .stream()
                 .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
-                .filter(s -> s.matches(".*[a-zA-Z0-9].*")) // filter out standalone punctuation
-                .filter(keyword -> !keyword.isBlank()) // filter out empty strings
+                .filter(s -> s.matches(".*[a-zA-Z0-9].*")) // filter standalone punctuation and whitespace
                 .toList();
     }
 }

@@ -39,13 +39,16 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
                 .split("\\s+");
 
         return keywords.stream()
-                .map(String::toLowerCase)
+                .map(keyword -> keyword.toLowerCase()
+                        .replaceAll("[^a-zA-Z0-9\\s]", "")) // Remove punctuation
                 .anyMatch(keyword -> Arrays.stream(nameTokens)
                         .anyMatch(token -> {
+                            // Use substring matching first for efficiency
                             if (token.contains(keyword)) {
                                 return true;
                             }
 
+                            // Fallback to fuzzy matching if no direct match is found
                             int threshold = Math.max(MIN_EDIT_RATIO, (int) (keyword.length() * EDIT_DISTANCE_RATIO));
                             return StringUtil.matchesFuzzy(token, keyword, threshold);
                         }));
