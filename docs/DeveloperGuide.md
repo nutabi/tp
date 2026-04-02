@@ -1181,8 +1181,6 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `delete i/1` followed by `undo`<br>
        Expected: The deleted contact is restored to the list. Status message indicates that the last delete action has been undone.
 
----
-
 2. Undoing multiple commands consecutively
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
@@ -1190,16 +1188,12 @@ testers are expected to do more *exploratory* testing.
     1. Test case: Execute `add n/A e/a@example.com`, then `add n/B e/b@example.com`, then `undo`, then `undo`<br>
        Expected: Both added contacts are removed one by one in reverse order. Status message reflects each undo operation.
 
----
-
 3. Undo when no undoable commands are available
 
     1. Prerequisites: Start the application fresh, or ensure all previous undoable commands have already been undone.
 
     1. Test case: `undo`<br>
        Expected: No changes to the contact list. Error details shown in the status message indicating that there are no actions to undo.
-
----
 
 4. Undo after non-undoable commands
 
@@ -1211,8 +1205,6 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `help`, then `undo`<br>
        Expected: No changes to the contact list. Error details shown in the status message if there are no undoable commands.
 
----
-
 5. Undo after a mix of commands
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
@@ -1220,14 +1212,10 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `add n/A e/a@example.com`, `list`, `delete i/1`, then `undo`<br>
        Expected: The deleted contact is restored. The `list` command is ignored by undo.
 
----
-
 6. Invalid undo command
 
     1. Test case: `undo extra`<br>
        Expected: No changes to the contact list. Error details shown in the status message indicating that the command does not accept parameters.
-
----
 
 7. Persistence after undo
 
