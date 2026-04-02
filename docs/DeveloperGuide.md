@@ -753,21 +753,24 @@ testers are expected to do more *exploratory* testing.
 4. Editing a person with duplicate email or Telegram handle
     1. Prerequisites: Start with the sample data loaded.
 
-    1. Test case: `edit 2 e/` *(use the email of the first contact)*<br>
+    1. Test case: `edit 2 e/alex@example.com` *(use the email of the first contact)*<br>
        Expected: No changes made. Error details shown indicating a person with this email already exists.
 
-    1. Test case: `edit 2 h/` *(use the Telegram handle of the first contact)*<br>
+    1. Test case: `edit 2 h/alex_yeoh` *(use the Telegram handle of the first contact)*<br>
        Expected: No changes made. Error details shown indicating a person with this Telegram handle already exists.
 
 5. Invalid edit commands
+    1. Test case: `edit`<br>
+       Expected: No changes made. Invalid command format error shown.
+
     1. Test case: `edit 1`<br>
-       Expected: No changes made. Error details shown indicating at least one field must be provided.
+       Expected: No changes made. Invalid command format error shown.
 
     1. Test case: `edit 0 n/John Lim`<br>
        Expected: No changes made. Error details shown indicating the index should be a positive integer.
 
     1. Test case: `edit 999 n/John Lim`<br>
-       Expected: No changes made. Error details shown indicating the index is invalid.
+       Expected: No changes made. Error details shown indicating the index is out of range.
 
     1. Test case: `edit 1 n/John Lim n/Jane Lim`<br>
        Expected: No changes made. Error details shown indicating duplicate prefixes.
