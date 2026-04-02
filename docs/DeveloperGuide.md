@@ -1254,6 +1254,53 @@ testers are expected to do more *exploratory* testing.
     1. Press **Up** once.<br>
        Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
 
+### Using keyboard shortcuts
+
+1. Clearing the input box
+
+    1. Prerequisites: Application is running. Some text is present in the input box.
+
+    1. Test case (Windows/Linux): Press <kbd>Delete</kbd><br>
+       Expected: The input box is cleared.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>Delete</kbd><br>
+       Expected: The input box is cleared.
+
+2. Exiting the application
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F3</kbd><br>
+       Expected: The application closes.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F3</kbd><br>
+       Expected: The application closes.
+
+3. Opening help
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F1</kbd><br>
+       Expected: The User Guide opens in the system default browser.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F1</kbd><br>
+       Expected: Same as above.
+
+4. Listing all contacts
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F2</kbd><br>
+       Expected: All contacts are displayed in the list.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F2</kbd><br>
+       Expected: Same as above.
+
+5. Invalid or unsupported key combinations
+
+    1. Test case: Press unrelated keys (e.g., <kbd>F4</kbd>, <kbd>Ctrl</kbd> + <kbd>F1</kbd>)<br>
+       Expected: No action is triggered. Application remains unchanged.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
