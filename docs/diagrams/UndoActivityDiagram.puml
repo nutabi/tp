@@ -5,26 +5,26 @@ start
 
 :Parse command;
 
-if () then (Is UndoCommand)
-  if (undoHistory is empty?) then (Is undoHistory empty)
+if () then ([Is UndoCommand])
+  if () then ([Is undoHistory empty])
     :Show error message;
     stop
-  else (Else)
+  else ([Else])
     :Retrieve command (peek);
     :Execute command.undo(model);
 
-    if () then (Is Undo successful)
+    if () then ([Is Undo successful])
       :Remove command from undoHistory (pop);
-    else (Else)
+    else ([Else])
       :Show error message;
     endif
   endif
-else (Else)
+else ([Else])
   :Execute command;
 
-  if () then (Is Command undoable?)
+  if () then ([Is Command undoable])
     :Push command to undoHistory;
-  else(Else)
+  else([Else])
   endif
 endif
 
