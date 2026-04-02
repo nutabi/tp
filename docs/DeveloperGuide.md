@@ -370,12 +370,12 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
 **Extension:**
 
-* 1a. User provides an unrecognised command name.
-    1a1. CampusBridge shows an error listing all valid commands.
+* 1a. User provides an unrecognised command name. 
+  * 1a1. CampusBridge shows an error listing all valid commands.
   Use case ends.
 
 * 1b. User provides more than one word.
-    1b1. CampusBridge shows an invalid command format error.
+  * 1b1. CampusBridge shows an invalid command format error.
   Use case ends.
 
 Use case ends.
@@ -408,7 +408,7 @@ Use case ends.
   Use case ends.
 
 * 4a. Contact cannot be added.
-    * 4a1. CampusBridge shows an error message indicating the contact could not be added.
+  * 4a1. CampusBridge shows an error message indicating the contact could not be added.
 
   Use case ends.
 
@@ -439,15 +439,15 @@ Use case ends.
   Use case ends.
 
 * 4b. Input does not follow the specified format.
-    * 4b1. CampusBridge shows an error message indicating the invalid format.
-    * 4b2. CampusBridge requests the user to re-enter input.
-    * 4b3. User enters a new input.
+  * 4b1. CampusBridge shows an error message indicating the invalid format.
+  * 4b2. CampusBridge requests the user to re-enter input.
+  * 4b3. User enters a new input.
 
   Steps 4b1 - 4b3 are repeated until input is valid.
   Use case resumes at step 5.
 
 * 5a. Contact cannot be updated.
-    * 5a1. CampusBridge shows an error message indicating the contact could not be updated.
+  * 5a1. CampusBridge shows an error message indicating the contact could not be updated.
 
   Use case ends.
 
@@ -472,25 +472,25 @@ Use case ends.
 
 **Extensions:**
 * 3a. Target contact identifier does not exist.
-    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
 * 3b. Input does not follow the specified format.
-    * 3b1. CampusBridge shows an error message indicating the invalid format.
-    * 3b2. CampusBridge requests the user to re-enter input.
-    * 3b3. User enters a new input.
+  * 3b1. CampusBridge shows an error message indicating the invalid format.
+  * 3b2. CampusBridge requests the user to re-enter input.
+  * 3b3. User enters a new input.
 
   Steps 3b1 - 3b3 are repeated until input is valid.
   Use case resumes at step 4.
 
 * 4a. Contact cannot be deleted.
-    * 4a1. CampusBridge shows an error message indicating the contact could not be deleted.
+  * 4a1. CampusBridge shows an error message indicating the contact could not be deleted.
 
   Use case ends.
 
 * 4b. Storage file cannot be written or accessed.
-    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
 
   Use case ends.
 
@@ -509,30 +509,30 @@ Use case ends.
 
 **Extensions:**
 * 3a. Target contact identifier does not exist.
-    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
 * 3b. Input does not follow the specified format.
-    * 3b1. CampusBridge shows an error message indicating the invalid format.
-    * 3b2. CampusBridge requests the user to re-enter input.
-    * 3b3. User enters a new input.
+  * 3b1. CampusBridge shows an error message indicating the invalid format.
+  * 3b2. CampusBridge requests the user to re-enter input.
+  * 3b3. User enters a new input.
 
   Steps 3b1 - 3b3 are repeated until input is valid.
   Use case resumes at step 4.
 
 * 3c. Tag already exists for contact.
-    * 3c1. CampusBridge informs user that the contact already has this tag.
+  * 3c1. CampusBridge informs user that the contact already has this tag.
 
   Use case ends.
 
 * 4a. Tag cannot be added.
-    * 4a1. CampusBridge shows an error message indicating the tag could not be added.
+  * 4a1. CampusBridge shows an error message indicating the tag could not be added.
 
   Use case ends.
 
 * 4b. Storage file cannot be written or accessed.
-    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
 
   Use case ends.
 
@@ -547,23 +547,23 @@ Use case ends.
 
 **Extensions:**
 * 1a. Input does not follow the specified format.
-    1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an invalid command format error.
   
   Use case ends.
 
 * 1b. Specified contact does not exist.
-    1b1. CampusBridge shows an error indicating the contact does not exist.
+  * 1b1. CampusBridge shows an error indicating the contact does not exist.
 
   Use case ends.
 
 * 1c. None of the specified tags exist on the contact.
-    1c1. CampusBridge shows an error indicating none of the tags were found.
+  * 1c1. CampusBridge shows an error indicating none of the tags were found.
   
   Use case ends.
 
 * 2a. Some but not all specified tags exist on the contact.
-    2a1. CampusBridge removes the existing tags and displays the updated contact.
-    2a2. CampusBridge informs the user which tags were not found.
+  * 2a1. CampusBridge removes the existing tags and displays the updated contact.
+  * 2a2. CampusBridge informs the user which tags were not found.
 
   Use case ends.
 
@@ -584,7 +584,7 @@ Use case ends.
 
 **Extensions:**
 * 1a. User provides extra arguments.
-    1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an invalid command format error.
     
   Use case ends.
 
@@ -608,15 +608,15 @@ Use case ends.
 
 **Extensions:**
 * 3a. Input does not follow the specified format.
-    * 3a1. CampusBridge shows an error message indicating the invalid format.
-    * 3a2. CampusBridge requests the user to re-enter input.
-    * 3a3. User enters a new input.
+  * 3a1. CampusBridge shows an error message indicating the invalid format.
+  * 3a2. CampusBridge requests the user to re-enter input.
+  * 3a3. User enters a new input.
 
   Steps 3a1 - 3a3 are repeated until input is valid.
   Use case resumes at step 4.
 
 * 4a. No contacts exist in the list.
-    * 4a1. CampusBridge informs the user that no contacts match the search query.
+  * 4a1. CampusBridge informs the user that no contacts match the search query.
 
   Use case ends.
 
@@ -637,17 +637,17 @@ Use case ends.
 
 **Extensions:**
 * 2a. No undoable commands available in undo history.
-    * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
+  * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
 
   Use case ends.
 
 * 3a. Command fails to execute its undo operation.
-    * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
+  * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
 
   Use case ends.
 
 * 5a. Storage file cannot be written or accessed.
-    * 5a1. CampusBridge shows an error message indicating the state could not be saved.
+  * 5a1. CampusBridge shows an error message indicating the state could not be saved.
 
   Use case ends.
 
@@ -663,22 +663,22 @@ Use case ends.
 
 **Extensions:**
 * 1a. No command history exists.
-    1a1. CampusBridge does nothing.
+  * 1a1. CampusBridge does nothing.
   
   Use case ends.
 
 * 2a. User requests to navigate to a more recent command.
-    2a1. CampusBridge displays the more recent command.
+  * 2a1. CampusBridge displays the more recent command.
   
   Use case resumes at step 1.
 
 * 2b. No earlier command exists.
-    2b1. CampusBridge does nothing.
+  * 2b1. CampusBridge does nothing.
 
   Use case resumes at step 1.
 
 * 2c. No more recent command exists.
-    2c1. CampusBridge does nothing.
+  * 2c1. CampusBridge does nothing.
 
   Use case resumes at step 1.
 
@@ -689,13 +689,14 @@ Use case ends.
 1. User requests to clear all contacts.
 2. CampusBridge clears all contacts.
 
+Use case ends.
+
 **Extensions:**
 * 1a. User provides extra arguments.
-  1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an invalid command format error.
 
   Use case ends.
 
-Use case ends.
 #### Use Case: UC14 - Exiting
 **Preconditions: Application is running**
 
@@ -703,9 +704,11 @@ Use case ends.
 1. User requests to exit the app.
 2. CampusBridge terminates.
 
+Use case ends.
+
 **Extensions:**
 * 1a. User provides extra arguments.
-   1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an invalid command format error.
 
   Use case ends.
 
