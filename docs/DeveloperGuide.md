@@ -194,7 +194,7 @@ Data is stored in two JSON files:
 **Error handling on startup**
 
 When CampusBridge starts, it attempts to read the address book file and handles three cases:
-* **File not found** — sample data is loaded and the file is created when the app exits.
+* **File not found** — sample data is loaded and the file is created on the next save or exit.
 * **File is malformed or contains invalid data** — an empty address book is used and a warning is logged; the corrupted file is left untouched.
 * **File is valid** — data is loaded normally.
 
@@ -1432,7 +1432,7 @@ testers are expected to do more *exploratory* testing.
    1. Relaunch the application. Expected: The application starts with an empty contact list. The corrupted file is not loaded to prevent data loss from bad state.
 
 1. Auto-saving after changes
-
-  1. Prerequisites: Application is running.
-
-  1. Test case: Add a new contact, then close the application using the close button. Relaunch. Expected: The newly added contact is present.
+   
+   1. Prerequisites: Application is running.
+   
+   1. Test case: Add a new contact, then close the application using the close button. Relaunch. Expected: The newly added contact is present.
