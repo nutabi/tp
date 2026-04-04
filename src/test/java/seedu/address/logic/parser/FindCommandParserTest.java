@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
+import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -51,15 +52,9 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_unprefixedKeywords_throwsParseException() {
-        assertParseFailure(parser, "alice bob",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-    }
-
-    @Test
     public void parse_preambleNotEmpty_throwsParseException() {
         assertParseFailure(parser, "alice n/bob",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_PREAMBLE_NOT_EMPTY, "alice", FindCommand.MESSAGE_USAGE));
     }
 
     @Test

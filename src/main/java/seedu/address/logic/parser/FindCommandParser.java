@@ -1,17 +1,14 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
-import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
-import static seedu.address.logic.parser.CliSyntax.NON_FIND_COMMAND_PREFIXES;
+import static seedu.address.logic.parser.CliSyntax.FIND_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -31,38 +28,22 @@ public class FindCommandParser implements Parser<FindCommand> {
         // ArgumentTokenizer recognizes prefixes only when preceded by whitespace.
         // Add a leading space so first prefix at start of argument string is recognized.
         String leadingSpacedArgs = args.startsWith(" ") ? args : " " + args;
-        assert leadingSpacedArgs.startsWith(" ") : "Input should start with a space for prefix recognition";
 
         // Check for any disallowed prefixes
-        Optional<String> unexpectedInput = ParserUtil.findUnexpectedExtraInput(leadingSpacedArgs,
-                NON_FIND_COMMAND_PREFIXES);
-        if (unexpectedInput.isPresent()) {
-            throw new ParseException(String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT,
-                    unexpectedInput.get()));
-        }
+        ParserUtil.validateNoInvalidPrefixInputs(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
 
-        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs,
-                PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
-
-        // Check for any prefixes with no value eg. find n/john e/ t/
-        Optional<String> emptyPrefix = ParserUtil.findEmptyPrefixValues(argumentMultimap,
-                PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
-        if (emptyPrefix.isPresent()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_PREFIX_WITH_NO_INPUT, emptyPrefix.get()));
-        }
+        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
+        // Check that preamble is empty and that no prefixes have empty values
+        ParserUtil.validateEmptyPreamble(argumentMultimap, FindCommand.MESSAGE_USAGE);
+        ParserUtil.validateNoEmptyPrefixValues(argumentMultimap, FIND_COMMAND_PREFIXES);
 
         // parse keywords for name, email and tags. Keywords for each field are split by whitespace.
         List<String> nameKeywords = parseKeywords(argumentMultimap, PREFIX_NAME);
         List<String> emailKeywords = parseKeywords(argumentMultimap, PREFIX_EMAIL);
         List<String> tags = parseKeywords(argumentMultimap, PREFIX_TAG);
 
-        // Throw exception if preamble is not empty, eg "find alice n/bob"
-        // If no name or email or tag keywords are specified
-        if (!argumentMultimap.getPreamble().isBlank()
-            || (nameKeywords.isEmpty() && emailKeywords.isEmpty() && tags.isEmpty())) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        }
+        // throw exception if no keywords are specified for all 3 fields.
+        requireAtLeastOneKeyword(nameKeywords, emailKeywords, tags);
 
         return new FindCommand(new NameEmailTagPredicate(nameKeywords, emailKeywords, tags));
     }
@@ -96,19 +77,28 @@ public class FindCommandParser implements Parser<FindCommand> {
                     continue;
                 }
 
-                // Check if token contains only punctuation (no alphanumeric characters)
-                if (!token.matches(".*[a-zA-Z0-9].*")) {
-                    throw new ParseException(String.format(
-                            MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
-                            prefix.getPrefix(),
-                            token));
-                }
-
+                // Check if token contains only special characters (no alphanumeric characters)
+                ParserUtil.validateKeywordContainsAlphanumeric(prefix, token);
                 validKeywords.add(token);
             }
         }
 
         // Return an unmodifiable copy of the valid keywords list
         return List.copyOf(validKeywords);
+    }
+
+    /**
+     * Ensures that at least one search field has keywords.
+     *
+     * @throws ParseException if all keyword lists are empty.
+     */
+    @SafeVarargs
+    private void requireAtLeastOneKeyword(List<String>... keywordLists) throws ParseException {
+        boolean areAllKeywordFieldsEmpty = Arrays.stream(keywordLists)
+                .allMatch(List::isEmpty);
+
+        if (areAllKeywordFieldsEmpty) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        }
     }
 }

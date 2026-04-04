@@ -1,7 +1,9 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
+import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
 import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
@@ -14,6 +16,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
@@ -32,6 +35,7 @@ import seedu.address.model.tag.TagType;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer (1, 2, 3...).";
+    private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile(".*[a-zA-Z0-9].*");
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -140,6 +144,25 @@ public class ParserUtil {
         }
         return tagSet;
     }
+
+    /**
+     * Parses all type of tags from the ArgumentMultimap and returns them as a Set.
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments.
+     * @return a Set of parsed Tags.
+     * @throws ParseException if any tag fails validation.
+     */
+    public static Set<Tag> parseAllTypeOfTags(ArgumentMultimap argMultimap) throws ParseException {
+        Set<Tag> tagList = new HashSet<>();
+
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_ROLE_TAG), TagType.ROLE));
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_COURSE_TAG), TagType.COURSE));
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_GENERAL_TAG), TagType.GENERAL));
+
+        return tagList;
+    }
+
+    //================================= Input Validation ==============================================/
 
     /**
      * Returns the first disallowed prefixed token in input order, if any.
@@ -304,19 +327,40 @@ public class ParserUtil {
     }
 
     /**
-     * Parses all type of tags from the ArgumentMultimap and returns them as a Set.
+     * Validates that the preamble of the given {@code ArgumentMultimap} is empty,
+     * i.e., that there is no unexpected text before the first valid prefix.
      *
-     * @param argMultimap the ArgumentMultimap containing the tokenized arguments.
-     * @return a Set of parsed Tags.
-     * @throws ParseException if any tag fails validation.
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param usageMessage the command usage message to include in the exception
+     * @throws ParseException if the preamble is not empty
      */
-    public static Set<Tag> parseAllTypeOfTags(ArgumentMultimap argMultimap) throws ParseException {
-        Set<Tag> tagList = new HashSet<>();
+    public static void validateEmptyPreamble(
+            ArgumentMultimap argMultimap, String usageMessage) throws ParseException {
 
-        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_ROLE_TAG), TagType.ROLE));
-        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_COURSE_TAG), TagType.COURSE));
-        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_GENERAL_TAG), TagType.GENERAL));
+        if (!argMultimap.getPreamble().isBlank()) {
+            throw new ParseException(
+                    String.format(MESSAGE_PREAMBLE_NOT_EMPTY, argMultimap.getPreamble(), usageMessage));
+        }
+    }
 
-        return tagList;
+    /**
+     * Validates that the given token contains at least one alphanumeric character.
+     * <p>
+     * A token consisting only of special characters is considered invalid and
+     * will cause a {@code ParseException} to be thrown.
+     *
+     * @param prefix the {@code Prefix} associated with the token (used in the error message)
+     * @param token the string token to validate
+     * @throws ParseException if the token contains only non-alphanumeric characters
+     */
+    public static void validateKeywordContainsAlphanumeric(Prefix prefix, String token)
+            throws ParseException {
+        // If the token does not contain any alphanumeric characters, it is invalid
+        if (!ALPHANUMERIC_PATTERN.matcher(token).matches()) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
+                    prefix.getPrefix(),
+                    token));
+        }
     }
 }

@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
+import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
 import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
@@ -215,6 +217,49 @@ public class ParserUtilTest {
                 )
         );
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    // ==================== Tests for parseAllTypeOfTags ====================
+
+    @Test
+    public void parseAllTypeOfTags_noTags_returnsEmptySet() throws Exception {
+        String args = "1";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertTrue(actualTags.isEmpty());
+    }
+
+    @Test
+    public void parseAllTypeOfTags_oneTypeOfTags_success() throws Exception {
+        String args = "1 tg/friends tg/groupmates";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_GENERAL_TAG);
+
+        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
+                new Tag("friends", TagType.GENERAL),
+                new Tag("groupmates", TagType.GENERAL)
+        ));
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertEquals(expectedTags, actualTags);
+    }
+
+    @Test
+    public void parseAllTypeOfTags_allTagTypesPresent_success() throws Exception {
+        String args = "1 tr/tutor tc/cs2103 tg/friends";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+
+        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
+                new Tag("tutor", TagType.ROLE),
+                new Tag("cs2103", TagType.COURSE),
+                new Tag("friends", TagType.GENERAL)
+        ));
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertEquals(expectedTags, actualTags);
     }
 
     //================== Tests for findUnexpectedExtraInput ==================
@@ -650,46 +695,76 @@ public class ParserUtilTest {
                 String.format(MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE, "tr/tutor")));
     }
 
-    // ==================== Tests for parseAllTypeOfTags ====================
+    //================== Tests for validateEmptyPreamble ==================
+    /*
+     Valid equivalence partitions for argMultimap:
+    - Empty preamble
+    - Non-empty preamble
+
+    Possible Boundary values:
+    - Prefix containing all whitespaces (should not throw exception as it is considered empty)
+     */
 
     @Test
-    public void parseAllTypeOfTags_noTags_returnsEmptySet() throws Exception {
-        String args = "1";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+    public void validateEmptyPreamble_emptyPreamble_noExceptionThrown() {
+        String args = " n/alice";
 
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
-
-        assertTrue(actualTags.isEmpty());
+        assertDoesNotThrow(() -> {
+            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME);
+            ParserUtil.validateEmptyPreamble(argMultimap, "Usage message");
+        });
     }
 
     @Test
-    public void parseAllTypeOfTags_oneTypeOfTags_success() throws Exception {
-        String args = "1 tg/friends tg/groupmates";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_GENERAL_TAG);
+    public void validateEmptyPreamble_preambleAllWhitespaces_noExceptionThrown() {
+        // Boundary case
+        String args = " \t \t \n \t \t n/alice";
 
-        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
-                new Tag("friends", TagType.GENERAL),
-                new Tag("groupmates", TagType.GENERAL)
-        ));
-
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
-
-        assertEquals(expectedTags, actualTags);
+        assertDoesNotThrow(() -> {
+            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME);
+            ParserUtil.validateEmptyPreamble(argMultimap, "Usage message");
+        });
     }
 
     @Test
-    public void parseAllTypeOfTags_allTagTypesPresent_success() throws Exception {
-        String args = "1 tr/tutor tc/cs2103 tg/friends";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+    public void validateEmptyPreamble_nonEmptyPreamble_throwsParseException() {
+        String args = " bob n/alice";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME);
+        String errorMessage = String.format(MESSAGE_PREAMBLE_NOT_EMPTY, "bob", "Usage message");
 
-        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
-                new Tag("tutor", TagType.ROLE),
-                new Tag("cs2103", TagType.COURSE),
-                new Tag("friends", TagType.GENERAL)
-        ));
+        assertThrows(ParseException.class,
+                errorMessage, () -> ParserUtil.validateEmptyPreamble(argMultimap, "Usage message"));
+    }
 
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+    //================== Tests for validateKeywordContainsAlphanumeric ==================
 
-        assertEquals(expectedTags, actualTags);
+    /*
+    Valid equivalence partitions for token:
+    - token contains only alphanumeric characters
+    - token contains only special characters
+    - token contains only alphanumeric characters and special characters (boundary)
+     */
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_alphanumericCharactersOnly_noExceptionThrown() {
+        assertDoesNotThrow(() -> {
+            ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "Alice123");
+        });
+    }
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_specialCharactersOnly_throwsParseException() {
+        String errorMessage = String.format(MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
+                PREFIX_NAME.getPrefix(), "!!!");
+
+        assertThrows(ParseException.class,
+                errorMessage, () -> ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "!!!"));
+    }
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_alphanumericAndSpecialCharacters_noExceptionThrown() {
+        assertDoesNotThrow(() -> {
+            ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "#Alice123!!!");
+        });
     }
 }

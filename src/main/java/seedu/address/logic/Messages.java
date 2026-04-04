@@ -38,6 +38,9 @@ public class Messages {
     public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
     public static final String MESSAGE_UNEXPECTED_EXTRA_INPUT =
             "Invalid command format! \nUnexpected extra input detected: '%s'.";
+    public static final String MESSAGE_PREAMBLE_NOT_EMPTY =
+            "Unexpected text before the first prefix: '%s'.\nRemove it or attach it to a valid prefix.\n%s";
+
     public static final String MESSAGE_DUPLICATE_EMAIL =
             "A person with this email already exists in the address book";
     public static final String MESSAGE_DUPLICATE_TELEGRAM_HANDLE =

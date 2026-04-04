@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -43,7 +44,9 @@ import seedu.address.commons.util.ToStringBuilder;
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
+    // Minimum number of edits allowed in fuzzy matching (prevents zero edits for very short keywords)
     private static final int MIN_ALLOWED_EDITS = 1;
+    // Ratio of keyword length to determine allowed edits in fuzzy matching (e.g., 20% of the keyword length)
     private static final double EDIT_DISTANCE_RATIO = 0.2;
 
     private final List<String> keywords;
@@ -75,19 +78,27 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     }
 
     private boolean matchesAnyToken(String[] nameTokens, String keyword) {
-        for (String token : nameTokens) {
-            if (token.contains(keyword)) {
-                return true;
-            }
-
-            if (isFuzzyMatch(token, keyword)) {
-                return true;
-            }
-        }
-
-        return false;
+        return Arrays.stream(nameTokens)
+                .anyMatch(token -> token.contains(keyword)
+                        || isFuzzyMatch(token, keyword));
     }
 
+    /**
+     * Checks whether the given {@code token} approximately matches the {@code keyword}
+     * using the Damerau-Levenshtein algorithm.
+     *
+     * <p>The allowed number of edits is calculated as the maximum of:
+     * <ul>
+     *     <li>{@code MIN_ALLOWED_EDITS} (minimum allowed edits)</li>
+     *     <li>{@code ceil(keyword.length() * EDIT_DISTANCE_RATIO)}</li>
+     * </ul>
+     * This ensures that longer keywords can tolerate more mismatches proportionally,
+     * while still enforcing a minimum edit allowance.</p>
+     *
+     * @param token the string to test
+     * @param keyword the target keyword
+     * @return {@code true} if {@code token} matches {@code keyword} within the allowed edit distance
+     */
     private boolean isFuzzyMatch(String token, String keyword) {
         int threshold = Math.max(MIN_ALLOWED_EDITS,
                 (int) Math.ceil(keyword.length() * EDIT_DISTANCE_RATIO));
@@ -102,11 +113,10 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof NameContainsKeywordsPredicate)) {
+        if (!(other instanceof NameContainsKeywordsPredicate otherNameContainsKeywordsPredicate)) {
             return false;
         }
 
-        NameContainsKeywordsPredicate otherNameContainsKeywordsPredicate = (NameContainsKeywordsPredicate) other;
         return keywords.equals(otherNameContainsKeywordsPredicate.keywords);
     }
 

@@ -54,18 +54,19 @@ public class NameEmailTagPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        boolean nameMatches = nameKeywords.isEmpty()
+        boolean isNameMatch = nameKeywords.isEmpty()
                 || new NameContainsKeywordsPredicate(nameKeywords).test(person);
 
-        boolean emailMatches = emailKeywords.isEmpty()
+        boolean isEmailMatch = emailKeywords.isEmpty()
                 || new EmailContainsKeywordsPredicate(emailKeywords).test(person);
 
-        boolean tagMatches = tags.isEmpty()
+        boolean isTagMatch = tags.isEmpty()
                 || new PersonContainsTagsPredicate(tags).test(person);
 
         // AND across fields
-        return nameMatches && emailMatches && tagMatches;
+        return isNameMatch && isEmailMatch && isTagMatch;
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
