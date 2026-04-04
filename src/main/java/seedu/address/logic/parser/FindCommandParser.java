@@ -94,10 +94,10 @@ public class FindCommandParser implements Parser<FindCommand> {
      */
     @SafeVarargs
     private void requireAtLeastOneKeyword(List<String>... keywordLists) throws ParseException {
-        boolean allEmpty = Arrays.stream(keywordLists)
+        boolean areAllKeywordFieldsEmpty = Arrays.stream(keywordLists)
                 .allMatch(List::isEmpty);
 
-        if (allEmpty) {
+        if (areAllKeywordFieldsEmpty) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
     }
