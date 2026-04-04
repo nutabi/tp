@@ -36,7 +36,11 @@ public class CliSyntax {
         PREFIX_INDEX, PREFIX_ROLE_TAG, PREFIX_COURSE_TAG, PREFIX_GENERAL_TAG
     };
 
-    public static final Prefix[] TAG_COMMAND_PREFIXES = {
+    public static final Prefix[] TAGS_COMMAND_PREFIXES = {
         PREFIX_ROLE_TAG, PREFIX_COURSE_TAG, PREFIX_GENERAL_TAG
+    };
+
+    public static final Prefix[] DELETE_COMMAND_PREFIXES = {
+        PREFIX_INDEX, PREFIX_EMAIL
     };
 }

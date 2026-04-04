@@ -1102,7 +1102,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Removing tags from a person where some tags don't exist
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Ensure the first person have existing `cs2103` course tag and `friends` general tags.
+   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Ensure the first person only have existing `cs2103` course tag and `friends` general tags.
 
    1. Test case: `untag 1 tg/friends tr/tutor` (where `friends` exists but `tutor` doesn't)<br>
       Expected: Only `friends` general tag is removed from the 1st person in the list. Status message shows:
