@@ -84,6 +84,7 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.fine("Executing edit command for index: " + index.getOneBased());
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
@@ -92,7 +93,10 @@ public class EditCommand extends Command {
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
+        assert personToEdit != null : "Person from filtered list should not be null";
+
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        assert editedPerson != null : "Edited person should not be null";
 
         throwIfDuplicate(model, personToEdit, editedPerson);
 
@@ -132,7 +136,9 @@ public class EditCommand extends Command {
 
         throwIfDuplicate(model, updatedPerson, originalPerson);
 
+        assert model.hasPerson(updatedPerson) : "Updated person should exist in model before undo";
         model.setPerson(updatedPerson, originalPerson);
+        logger.info("Undid edit: " + updatedPerson.getName() + " -> " + originalPerson.getName());
 
         return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson)));
     }
@@ -168,10 +174,11 @@ public class EditCommand extends Command {
      * @param target the person to check for duplicates.
      * @throws CommandException if a duplicate conflict is found.
      */
-    private static void throwIfDuplicate(Model model, Person excluded, Person target) throws CommandException {
+    private void throwIfDuplicate(Model model, Person excluded, Person target) throws CommandException {
         DuplicateConflict conflict = model.getDuplicateConflictExcluding(excluded, target);
         String message = Messages.getDuplicateConflictMessage(conflict);
         if (message != null) {
+            logger.warning("Duplicate conflict detected for: " + target.getName() + " - " + message);
             throw new CommandException(message);
         }
     }
