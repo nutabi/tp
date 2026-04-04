@@ -33,10 +33,10 @@ public class FindCommandParser implements Parser<FindCommand> {
         // Check for any disallowed prefixes
         ParserUtil.validateNoInvalidPrefixInputs(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
 
-        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs,
-                FIND_COMMAND_PREFIXES);
+        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
 
-        // Check for any prefixes with no value eg. find n/john e/ t/
+        // Check that preamble is empty and that no prefixes have empty values
+        ParserUtil.validateEmptyPreamble(argumentMultimap, FindCommand.MESSAGE_USAGE);
         ParserUtil.validateNoEmptyPrefixValues(argumentMultimap, FIND_COMMAND_PREFIXES);
 
         // parse keywords for name, email and tags. Keywords for each field are split by whitespace.
@@ -44,10 +44,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         List<String> emailKeywords = parseKeywords(argumentMultimap, PREFIX_EMAIL);
         List<String> tags = parseKeywords(argumentMultimap, PREFIX_TAG);
 
-        // Throw exception if preamble is not empty, eg "find alice n/bob"
-        // If no name or email or tag keywords are specified
-        if (!argumentMultimap.getPreamble().isBlank()
-            || (nameKeywords.isEmpty() && emailKeywords.isEmpty() && tags.isEmpty())) {
+        // throw exception if no keywords are specified for all 3 fields.
+        if (nameKeywords.isEmpty() && emailKeywords.isEmpty() && tags.isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }

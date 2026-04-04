@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
+import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
 import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
@@ -300,6 +301,15 @@ public class ParserUtil {
         Optional<String> nonEmptyPrefix = findNoValuesAfterPrefix(argMultimap, prefixes);
         if (nonEmptyPrefix.isPresent()) {
             throw new ParseException(String.format(MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE, nonEmptyPrefix.get()));
+        }
+    }
+
+    public static void validateEmptyPreamble(
+            ArgumentMultimap argMultimap, String usageMessage) throws ParseException {
+
+        if (!argMultimap.getPreamble().isBlank()) {
+            throw new ParseException(
+                    String.format(MESSAGE_PREAMBLE_NOT_EMPTY, argMultimap.getPreamble(), usageMessage));
         }
     }
 
