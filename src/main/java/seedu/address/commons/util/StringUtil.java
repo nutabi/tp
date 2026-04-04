@@ -91,6 +91,8 @@ public class StringUtil {
         }
     }
 
+    //====================== Fuzzy String Matching ============================/
+
     /**
      * Computes the Damerau–Levenshtein distance (Optimal String Alignment variant)
      * between two strings.
