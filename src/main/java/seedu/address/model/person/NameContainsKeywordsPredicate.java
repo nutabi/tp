@@ -43,7 +43,9 @@ import seedu.address.commons.util.ToStringBuilder;
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
+    // Minimum number of edits allowed in fuzzy matching (prevents zero edits for very short keywords)
     private static final int MIN_ALLOWED_EDITS = 1;
+    // Ratio of keyword length to determine allowed edits in fuzzy matching (e.g., 20% of the keyword length)
     private static final double EDIT_DISTANCE_RATIO = 0.2;
 
     private final List<String> keywords;
@@ -84,6 +86,22 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
         return false;
     }
 
+    /**
+     * Checks whether the given {@code token} approximately matches the {@code keyword}
+     * using the Damerau-Levenshtein algorithm.
+     *
+     * <p>The allowed number of edits is calculated as the maximum of:
+     * <ul>
+     *     <li>{@code MIN_ALLOWED_EDITS} (minimum allowed edits)</li>
+     *     <li>{@code ceil(keyword.length() * EDIT_DISTANCE_RATIO)}</li>
+     * </ul>
+     * This ensures that longer keywords can tolerate more mismatches proportionally,
+     * while still enforcing a minimum edit allowance.</p>
+     *
+     * @param token the string to test
+     * @param keyword the target keyword
+     * @return {@code true} if {@code token} matches {@code keyword} within the allowed edit distance
+     */
     private boolean isFuzzyMatch(String token, String keyword) {
         int threshold = Math.max(MIN_ALLOWED_EDITS,
                 (int) Math.ceil(keyword.length() * EDIT_DISTANCE_RATIO));
