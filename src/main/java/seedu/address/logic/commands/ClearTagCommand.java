@@ -98,7 +98,7 @@ public class ClearTagCommand extends Command {
 
     /**
      * @return {@code true} since clearing tags can be undone by restoring
-     * the person's original tags.
+     *     the person's original tags.
      */
     @Override
     public boolean isUndoable() {
@@ -117,9 +117,8 @@ public class ClearTagCommand extends Command {
     public CommandResult undo(Model model) throws CommandException {
         return undoPersonChange(model, originalPerson, updatedPerson,
                 MESSAGE_UNDO_FAILURE, logger,
-                () -> "Undid " + COMMAND_WORD + ": " + typeToClear + " for " + originalPerson.getName(),
-                () -> new CommandResult(
-                        String.format(MESSAGE_UNDO_SUCCESS, typeToClear, Messages.format(originalPerson))));
+                this::getUndoLogMessage,
+                this::getUndoResult);
     }
 
     @Override
@@ -144,5 +143,13 @@ public class ClearTagCommand extends Command {
                 .add("index", index)
                 .add("typeToClear", typeToClear)
                 .toString();
+    }
+
+    private String getUndoLogMessage() {
+        return "Undid " + COMMAND_WORD + ": " + typeToClear + " for " + originalPerson.getName();
+    }
+
+    private CommandResult getUndoResult() {
+        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, typeToClear, Messages.format(originalPerson)));
     }
 }

@@ -93,7 +93,7 @@ public class AddCommand extends Command {
             throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
         model.deletePerson(toAdd);
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(toAdd)));
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, toAdd);
     }
 
     @Override

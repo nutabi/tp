@@ -128,7 +128,7 @@ public class EditCommand extends Command {
 
     /**
      * @return {@code true} since editing a person can be undone by restoring
-     * the person's original details.
+     *      the person's original details.
      */
     @Override
     public boolean isUndoable() {
@@ -152,8 +152,8 @@ public class EditCommand extends Command {
         throwIfDuplicate(model, updatedPerson, originalPerson);
         return undoPersonChange(model, originalPerson, updatedPerson,
                 MESSAGE_UNDO_FAILURE, logger,
-                () -> "Undid " + COMMAND_WORD + ": " + updatedPerson.getName() + " -> " + originalPerson.getName(),
-                () -> new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson))));
+                this::getUndoLogMessage,
+                this::getUndoResult);
     }
 
     /**
@@ -194,6 +194,14 @@ public class EditCommand extends Command {
             logger.warning("Duplicate conflict detected for: " + target.getName() + " - " + message);
             throw new CommandException(message);
         }
+    }
+
+    private String getUndoLogMessage() {
+        return "Undid " + COMMAND_WORD + ": " + updatedPerson.getName() + " -> " + originalPerson.getName();
+    }
+
+    private CommandResult getUndoResult() {
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, originalPerson);
     }
 
     @Override

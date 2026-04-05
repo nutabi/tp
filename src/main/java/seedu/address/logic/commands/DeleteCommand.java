@@ -84,7 +84,7 @@ public class DeleteCommand extends Command {
 
     /**
      * @return {@code true} since deleting a person can be undone by restoring
-     * the deleted person to the address book.
+     *      the deleted person to the address book.
      */
     @Override
     public boolean isUndoable() {
@@ -103,18 +103,9 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);
-        if (deletedPerson == null) {
-            throw new CommandException("Cannot undo delete before command execution.");
-        }
-        if (model.hasPerson(deletedPerson)) {
-            throw new CommandException(MESSAGE_UNDO_FAILURE);
-        }
-        if (deletedPersonIndex < 0 || deletedPersonIndex > model.getAddressBook().getPersonList().size()) {
-            model.addPerson(deletedPerson);
-        } else {
-            model.addPerson(deletedPersonIndex, deletedPerson);
-        }
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(deletedPerson)));
+        validateUndoable(model);
+        restoreDeletedPerson(model);
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, deletedPerson);
     }
 
     @Override
@@ -149,5 +140,22 @@ public class DeleteCommand extends Command {
                                 String.format(MESSAGE_PERSON_NOT_FOUND_DISPLAYED_EMAIL, targetEmail)
                         )
                 );
+    }
+
+    private void validateUndoable(Model model) throws CommandException {
+        if (deletedPerson == null) {
+            throw new CommandException("Cannot undo delete before command execution.");
+        }
+        if (model.hasPerson(deletedPerson)) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+    }
+
+    private void restoreDeletedPerson(Model model) {
+        if (deletedPersonIndex < 0 || deletedPersonIndex > model.getAddressBook().getPersonList().size()) {
+            model.addPerson(deletedPerson);
+            return;
+        }
+        model.addPerson(deletedPersonIndex, deletedPerson);
     }
 }

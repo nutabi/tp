@@ -31,7 +31,7 @@ public class ClearCommand extends Command {
 
     /**
      * @return {@code true} since a clear operation can be undone by restoring
-     * the previous state of the address book.
+     *     the previous state of the address book.
      */
     @Override
     public boolean isUndoable() {

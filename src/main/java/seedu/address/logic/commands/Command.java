@@ -2,9 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.logging.Logger;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -40,17 +41,17 @@ public abstract class Command {
     }
 
     /**
-     * Helper for undoing a person-level change.
+     * Undoes a person-level update by restoring the original person in place of the updated one.
      *
-     * @param model the model
-     * @param original the original person
-     * @param updated the updated person
-     * @param failureMessage message to show if undo fails
-     * @param logger the command logger
-     * @param undoLogMessageSupplier supplies the log message to emit after undo succeeds
-     * @param undoResultSupplier supplies the command result to return after undo succeeds
-     * @return CommandResult with the formatted success message
-     * @throws CommandException if undo cannot be completed
+     * @param model the model to update
+     * @param original the person state to restore
+     * @param updated the current person state to replace
+     * @param failureMessage message to show if undo cannot proceed
+     * @param logger the logger used to record a successful undo
+     * @param undoLogMessageSupplier supplies the undo log message after restoration succeeds
+     * @param undoResultSupplier supplies the result to return after restoration succeeds
+     * @return the command result for a successful undo
+     * @throws CommandException if the original or updated state was not recorded
      */
     protected CommandResult undoPersonChange(Model model, Person original, Person updated,
                                              String failureMessage, Logger logger,
@@ -68,5 +69,16 @@ public abstract class Command {
         model.setPerson(updated, original);
         logger.info(undoLogMessageSupplier.get());
         return undoResultSupplier.get();
+    }
+
+    /**
+     * Creates a command result for an undo operation involving a single person.
+     *
+     * @param successMessage the undo success message template
+     * @param person the person to include in the message
+     * @return the formatted undo result
+     */
+    protected CommandResult createUndoPersonResult(String successMessage, Person person) {
+        return new CommandResult(String.format(successMessage, Messages.format(person)));
     }
 }
