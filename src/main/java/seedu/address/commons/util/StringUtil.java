@@ -69,10 +69,10 @@ public class StringUtil {
     //====================== Fuzzy String Matching ============================/
 
     /**
-     * Normalizes the input string by converting it to lowercase and removing
-     * non-alphanumeric characters for consistent comparison and storage.
+     * Normalizes the input string for fuzzy matching by converting it to lowercase
+     * and replacing non-alphanumeric characters with spaces.
      *
-     * <p>This method standardizes strings by:
+     * <p>This method prepares strings for fuzzy comparison by:
      * <ul>
      *   <li>Converting all characters to lowercase</li>
      *   <li>Replacing non-alphanumeric characters (punctuation, symbols, etc.) with spaces</li>
@@ -80,14 +80,11 @@ public class StringUtil {
      *   <li>Trimming leading and trailing whitespace</li>
      * </ul>
      *
-     * <p>Useful for fuzzy matching, search preprocessing, or comparing names
-     * with inconsistent casing or special characters.</p>
-     *
      * @param s the string to normalize (cannot be null)
      * @return the normalized string containing lowercase letters, digits, and spaces only
      * @throws NullPointerException if {@code s} is {@code null}
      */
-    public static String normalize(String s) {
+    public static String normalizeForFuzzyMatching(String s) {
         requireNonNull(s);
 
         return s.toLowerCase()

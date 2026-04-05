@@ -22,7 +22,7 @@ import seedu.address.commons.util.ToStringBuilder;
  * <p>The fuzzy threshold is computed as:
  * {@code max(MIN_ALLOWED_EDITS, keyword.length() * EDIT_DISTANCE_RATIO)}.</p>
  *
- * @see StringUtil#normalize(String)
+ * @see StringUtil#normalizeForFuzzyMatching(String)
  * @see StringUtil#isWithinEditDistance(String, String, int)
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
@@ -46,7 +46,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
         requireAllNonNull(keywords);
 
         this.normalizedKeywords = keywords.stream()
-                .map(StringUtil::normalize)
+                .map(StringUtil::normalizeForFuzzyMatching)
                 .flatMap(s -> Arrays.stream(s.split("\\s+")))
                 .filter(s -> !s.isEmpty())
                 .toList();
@@ -55,7 +55,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         // Split name based on white spaces
-        List<String> nameTokens = Arrays.asList(StringUtil.normalize(person.getName().fullName)
+        List<String> nameTokens = Arrays.asList(StringUtil.normalizeForFuzzyMatching(person.getName().fullName)
                         .split("\\s+"));
 
         return normalizedKeywords.stream()

@@ -143,34 +143,34 @@ public class StringUtilTest {
 
     //---------------- Tests for normalize ----------------------------------------
     @Test
-    public void normalize_nullGiven_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.normalize(null));
+    public void normalizeForFuzzyMatching_nullGiven_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.normalizeForFuzzyMatching(null));
     }
 
     @Test
-    public void normalize_validString_returnsNormalizedString() {
+    public void normalizeForFuzzyMatching_validString_returnsNormalizedString() {
         // all lowercase
-        assertEquals("bob", StringUtil.normalize("bob"));
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("bob"));
 
         // Mixed cases
-        assertEquals("bob", StringUtil.normalize("bOb"));
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("bOb"));
 
         // Trailing whitespaces should be trimmed
-        assertEquals("bob", StringUtil.normalize("\t bob \t"));
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("\t bob \t"));
 
         // Lowercase String with non-alphanumeric characters
-        assertEquals("bob c prim", StringUtil.normalize("bob c. prim"));
-        assertEquals("bob hi", StringUtil.normalize("bob hi."));
-        assertEquals("jean luc", StringUtil.normalize("jean-luc."));
+        assertEquals("bob c prim", StringUtil.normalizeForFuzzyMatching("bob c. prim"));
+        assertEquals("bob hi", StringUtil.normalizeForFuzzyMatching("bob hi."));
+        assertEquals("jean luc", StringUtil.normalizeForFuzzyMatching("jean-luc."));
 
         // Mixed case String with non-alphanumeric characters
-        assertEquals("bob c prim", StringUtil.normalize("bob C. PrIm"));
+        assertEquals("bob c prim", StringUtil.normalizeForFuzzyMatching("bob C. PrIm"));
 
         // String with all punctuation
-        assertEquals("", StringUtil.normalize("#$%^&*()"));
+        assertEquals("", StringUtil.normalizeForFuzzyMatching("#$%^&*()"));
     }
 
-    //---------------- Tests for dameraudamerauLevenshteinDistance --------------------------------------
+    //---------------- Tests for damerauLevenshteinDistance --------------------------------------
 
     @Test
     public void damerauLevenshteinDistance_identicalStrings_returnsZero() {
