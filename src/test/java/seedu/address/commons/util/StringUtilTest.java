@@ -161,6 +161,7 @@ public class StringUtilTest {
         // Lowercase String with non-alphanumeric characters
         assertEquals("bob c prim", StringUtil.normalize("bob c. prim"));
         assertEquals("bob hi", StringUtil.normalize("bob hi."));
+        assertEquals("jean luc", StringUtil.normalize("jean-luc."));
 
         // Mixed case String with non-alphanumeric characters
         assertEquals("bob c prim", StringUtil.normalize("bob C. PrIm"));

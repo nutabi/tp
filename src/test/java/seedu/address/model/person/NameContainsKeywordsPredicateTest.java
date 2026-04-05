@@ -86,9 +86,9 @@ public class NameContainsKeywordsPredicateTest {
 
         // Keywords match phone, email and address, but does not match name
         predicate = new NameContainsKeywordsPredicate(
-                Arrays.asList("12345", "alice@email.com", "Main", "Street"));
+                Arrays.asList("12345", "alicetan123@email.com", "Main", "Street"));
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").withPhone("12345")
-                .withEmail("alice@email.com").build()));
+                .withEmail("alicetan123@email.com").build()));
 
         // Test fuzzy match failure (outside threshold)
         predicate = new NameContainsKeywordsPredicate(List.of("AliceXXXX")); // 4 edits away from "Alice"

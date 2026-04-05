@@ -75,8 +75,8 @@ public class StringUtil {
      * <p>This method standardizes strings for comparison and storage by:
      * <ul>
      *   <li>Converting all characters to lowercase for case-insensitive operations</li>
+     *   <li>Replacing non-alphanumeric characters (punctuation, symbols, etc.) with spaces</li>
      *   <li>Removing any trailing whitespaces</li>
-     *   <li>Removing all special characters (punctuation, symbols, etc.)</li>
      *   <li>Preserving alphanumeric characters (a-z, 0-9) and whitespace</li>
      * </ul>
      * </p>
@@ -92,8 +92,9 @@ public class StringUtil {
         requireNonNull(s);
 
         return s.toLowerCase()
-                .trim()
-                .replaceAll("[^a-z0-9\\s]", "");
+                .replaceAll("[^a-z0-9\\s]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
     }
 
     /**

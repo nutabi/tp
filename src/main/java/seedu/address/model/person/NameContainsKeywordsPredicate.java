@@ -64,6 +64,8 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
         this.normalizedKeywords = keywords.stream()
                 .map(StringUtil::normalize)
+                .flatMap(s -> Arrays.stream(s.split("\\s+")))
+                .filter(s -> !s.isEmpty())
                 .toList();
     }
 
