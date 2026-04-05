@@ -10,37 +10,20 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Tests that a {@code Person}'s {@code Name} matches any of the keywords given.
+ * Predicate that tests if a {@code Person}'s {@code Name} matches any given keywords.
  *
- * <p>The predicate performs both exact and fuzzy matching on individual name tokens:
+ * <p>Matching is case-insensitive and performed on normalized strings.
+ * Supports:</p>
  * <ul>
- *   <li><b>Exact substring matching:</b> A keyword is considered a match if it is a
- *       substring of any name token (e.g., "john" matches tokens containing "john")</li>
- *   <li><b>Fuzzy matching:</b> Additionally, keywords can fuzzy-match name tokens within
- *       a Damerau–Levenshtein distance threshold to handle typos and variations</li>
+ *   <li>Exact substring matching (keyword contained in a name token)</li>
+ *   <li>Fuzzy matching within a Damerau–Levenshtein distance threshold to handle typos</li>
  * </ul>
- * </p>
  *
- * <p>The fuzzy matching threshold is calculated dynamically based on keyword length:
- * <pre>
- *   threshold = max(MIN_ALLOWED_EDITS, keyword.length() * EDIT_DISTANCE_RATIO)
- * </pre>
- * By default, this allows at least 1 edit (substitution, insertion, or deletion)
- * for short keywords, scaling up for longer keywords (e.g., 20% of keyword length).
- * </p>
+ * <p>The fuzzy threshold is computed as:
+ * {@code max(MIN_ALLOWED_EDITS, keyword.length() * EDIT_DISTANCE_RATIO)}.</p>
  *
- * <p>All matching is case-insensitive and performed on normalized strings
- * (lowercase with special characters removed).</p>
- *
- * <p>Examples (with default threshold settings):
- * <pre>
- *   Keyword "john" matches name tokens: "john", "jon", "joan" (fuzzy)
- *   Keyword "alice" matches name tokens: "alice", "aliec", "alie"
- * </pre>
- * </p>
- *
- * @see StringUtil#normalize(String) for normalization details
- * @see StringUtil#matchesFuzzy(String, String, int) for fuzzy matching details
+ * @see StringUtil#normalize(String)
+ * @see StringUtil#matchesFuzzy(String, String, int)
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
@@ -72,15 +55,15 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         // Split name based on white spaces
-        String[] nameTokens = StringUtil.normalize(person.getName().fullName)
-                .split("\\s+");
+        List<String> nameTokens = Arrays.asList(StringUtil.normalize(person.getName().fullName)
+                        .split("\\s+"));
 
         return normalizedKeywords.stream()
                 .anyMatch(keyword -> matchesAnyToken(nameTokens, keyword));
     }
 
-    private boolean matchesAnyToken(String[] nameTokens, String keyword) {
-        return Arrays.stream(nameTokens)
+    private boolean matchesAnyToken(List<String> nameTokens, String keyword) {
+        return nameTokens.stream()
                 .anyMatch(token -> token.contains(keyword)
                         || isFuzzyMatch(token, keyword));
     }
@@ -89,23 +72,34 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
      * Checks whether the given {@code token} approximately matches the {@code keyword}
      * using the Damerau-Levenshtein algorithm.
      *
+     * @param token the string to test
+     * @param keyword the target keyword
+     * @return {@code true} if {@code token} matches {@code keyword} within the allowed edit distance
+     */
+    private boolean isFuzzyMatch(String token, String keyword) {
+        int threshold = computeThreshold(keyword);
+
+        return StringUtil.matchesFuzzy(token, keyword, threshold);
+    }
+
+    /**
+     * Computes the maximum allowed number of edits for a given keyword.
+     *
      * <p>The allowed number of edits is calculated as the maximum of:
      * <ul>
      *     <li>{@code MIN_ALLOWED_EDITS} (minimum allowed edits)</li>
      *     <li>{@code ceil(keyword.length() * EDIT_DISTANCE_RATIO)}</li>
      * </ul>
      * This ensures that longer keywords can tolerate more mismatches proportionally,
-     * while still enforcing a minimum edit allowance.</p>
+     * while still enforcing a minimum edit allowance.
      *
-     * @param token the string to test
-     * @param keyword the target keyword
-     * @return {@code true} if {@code token} matches {@code keyword} within the allowed edit distance
+     * @param keyword the keyword for which to compute the allowed edits
+     * @return the maximum allowed number of edits for this keyword
      */
-    private boolean isFuzzyMatch(String token, String keyword) {
-        int threshold = Math.max(MIN_ALLOWED_EDITS,
+    private int computeThreshold(String keyword) {
+        return Math.max(
+                MIN_ALLOWED_EDITS,
                 (int) Math.ceil(keyword.length() * EDIT_DISTANCE_RATIO));
-
-        return StringUtil.matchesFuzzy(token, keyword, threshold);
     }
 
     @Override
