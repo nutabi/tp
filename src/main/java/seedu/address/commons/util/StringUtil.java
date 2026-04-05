@@ -180,41 +180,42 @@ public class StringUtil {
     }
 
     /**
-     * Returns true if the {@code query} matches the {@code candidate} using fuzzy matching.
+     * Returns true if the {@code target} is within a given edit distance from the {@code keyword}.
      *
-     * <p>Fuzzy matching uses Damerau–Levenshtein distance to allow approximate matches.
-     * The method returns true if the Damerau–Levenshtein distance between the query and candidate
-     * is less than or equal to the specified threshold.</p>
+     * <p>This method uses the Damerau–Levenshtein distance (Optimal String Alignment variant) to
+     * compute the minimum number of single-character edits (insertion, deletion, substitution,
+     * or transposition of adjacent characters) required to transform {@code target} into {@code keyword}.
+     * The method returns true if this distance is less than or equal to {@code threshold}.</p>
      *
      * <p>Preconditions:
      *   <ul>
-     *       <li>{@code query} and {@code candidate} must be non-null</li>
-     *       <li>{@code query} and {@code candidate} must already be normalized
-     *       (trimmed, lowercased, and with non-alphanumeric characters handled consistently)</li>
+     *       <li>{@code keyword} and {@code target} must be non-null</li>
+     *       <li>{@code keyword} and {@code target} must already be normalized
+     *           (trimmed, lowercased, and with non-alphanumeric characters handled consistently)</li>
      *       <li>{@code threshold} must be non-negative</li>
      *   </ul>
      *
-     * @param query the search query string (will be trimmed)
-     * @param candidate the word to match against (will be trimmed)
-     * @param threshold the maximum Levenshtein distance allowed for a match
-     * @return true if the words match within the threshold, false otherwise
-     * @throws NullPointerException if {@code query} or {@code word} is {@code null}
+     * @param keyword the search term (user input)
+     * @param target the string to match against (e.g., name, tag, or word)
+     * @param threshold the maximum allowed edit distance for a match
+     * @return true if {@code target} is within {@code threshold} edits of {@code keyword}, false otherwise
+     * @throws NullPointerException if {@code keyword} or {@code target} is null
      * @throws IllegalArgumentException if {@code threshold} is negative
      */
-    public static boolean matchesFuzzy(String query, String candidate, int threshold) {
-        requireNonNull(query);
-        requireNonNull(candidate);
+    public static boolean isWithinEditDistance(String keyword, String target, int threshold) {
+        requireNonNull(keyword);
+        requireNonNull(target);
         checkArgument(threshold >= 0, "Threshold cannot be negative");
 
         // Handle empty strings after trimming
-        if (query.isEmpty() || candidate.isEmpty()) {
+        if (keyword.isEmpty() || target.isEmpty()) {
             // Empty query should not match non-empty word and vice versa
             // except when both are empty (distance = 0)
-            return query.isEmpty() && candidate.isEmpty();
+            return keyword.isEmpty() && target.isEmpty();
         }
 
         // Calculate Damerau Levenshtein Distance and check if within threshold
-        int distance = damerauLevenshteinDistance(query, candidate);
+        int distance = damerauLevenshteinDistance(keyword, target);
         return distance <= threshold;
     }
 

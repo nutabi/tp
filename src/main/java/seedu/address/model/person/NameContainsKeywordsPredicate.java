@@ -23,7 +23,7 @@ import seedu.address.commons.util.ToStringBuilder;
  * {@code max(MIN_ALLOWED_EDITS, keyword.length() * EDIT_DISTANCE_RATIO)}.</p>
  *
  * @see StringUtil#normalize(String)
- * @see StringUtil#matchesFuzzy(String, String, int)
+ * @see StringUtil#isWithinEditDistance(String, String, int)
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
 
@@ -84,7 +84,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
             return false;
         }
 
-        return StringUtil.matchesFuzzy(keyword, token, threshold);
+        return StringUtil.isWithinEditDistance(keyword, token, threshold);
     }
 
     /**

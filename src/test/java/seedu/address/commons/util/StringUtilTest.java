@@ -230,7 +230,7 @@ public class StringUtilTest {
         assertThrows(NullPointerException.class, () -> StringUtil.damerauLevenshteinDistance(null, null));
     }
 
-    //---------------- Tests for matchesFuzzy ----------------------------------------
+    //---------------- Tests for isWithinEditDistance ----------------------------------------
 
     /*
      * Invalid equivalence partitions for query/word: null
@@ -239,19 +239,19 @@ public class StringUtilTest {
      */
 
     @Test
-    public void matchesFuzzy_nullQuery_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.matchesFuzzy(null, "word", 1));
+    public void isWithinEditDistance_nullQuery_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.isWithinEditDistance(null, "word", 1));
     }
 
     @Test
-    public void matchesFuzzy_nullWord_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.matchesFuzzy("query", null, 1));
+    public void isWithinEditDistance_nullWord_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.isWithinEditDistance("query", null, 1));
     }
 
     @Test
-    public void matchesFuzzy_negativeThreshold_throwsIllegalArgumentException() {
+    public void isWithinEditDistance_negativeThreshold_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, "Threshold cannot be negative", () ->
-                StringUtil.matchesFuzzy("query", "word", -1));
+                StringUtil.isWithinEditDistance("query", "word", -1));
     }
 
     /*
@@ -283,110 +283,110 @@ public class StringUtilTest {
      */
 
     @Test
-    public void matchesFuzzy_exactMatches_returnsTrue() {
+    public void isWithinEditDistance_exactMatches_returnsTrue() {
         // Identical strings
-        assertTrue(StringUtil.matchesFuzzy("john", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("test", "test", 1));
-        assertTrue(StringUtil.matchesFuzzy("hello", "hello", 2));
+        assertTrue(StringUtil.isWithinEditDistance("john", "john", 0));
+        assertTrue(StringUtil.isWithinEditDistance("test", "test", 1));
+        assertTrue(StringUtil.isWithinEditDistance("hello", "hello", 2));
     }
 
     @Test
-    public void matchesFuzzy_withinThreshold_returnsTrue() {
+    public void isWithinEditDistance_withinThreshold_returnsTrue() {
         // 1 character difference (substitution)
-        assertTrue(StringUtil.matchesFuzzy("john", "joan", 1)); // substitution: h->a
-        assertTrue(StringUtil.matchesFuzzy("cat", "cut", 1)); // substitution: a->u
+        assertTrue(StringUtil.isWithinEditDistance("john", "joan", 1)); // substitution: h->a
+        assertTrue(StringUtil.isWithinEditDistance("cat", "cut", 1)); // substitution: a->u
 
         // 1 character difference (insertion/deletion)
-        assertTrue(StringUtil.matchesFuzzy("cat", "cats", 1)); // 1 insertion
-        assertTrue(StringUtil.matchesFuzzy("cats", "cat", 1)); // 1 deletion: s
-        assertTrue(StringUtil.matchesFuzzy("jhon", "john", 2)); // 1 transposition
+        assertTrue(StringUtil.isWithinEditDistance("cat", "cats", 1)); // 1 insertion
+        assertTrue(StringUtil.isWithinEditDistance("cats", "cat", 1)); // 1 deletion: s
+        assertTrue(StringUtil.isWithinEditDistance("jhon", "john", 2)); // 1 transposition
 
         // 2 character differences
-        assertTrue(StringUtil.matchesFuzzy("kitten", "sitting", 3)); // Multiple operations
+        assertTrue(StringUtil.isWithinEditDistance("kitten", "sitting", 3)); // Multiple operations
 
         // Threshold larger than needed
-        assertTrue(StringUtil.matchesFuzzy("cat", "dog", 5)); // threshold is generous
+        assertTrue(StringUtil.isWithinEditDistance("cat", "dog", 5)); // threshold is generous
     }
 
     @Test
-    public void matchesFuzzy_exceedsThreshold_returnsFalse() {
+    public void isWithinEditDistance_exceedsThreshold_returnsFalse() {
         // Significantly different words with small threshold
-        assertFalse(StringUtil.matchesFuzzy("john", "dog", 1)); // distance = 3
-        assertFalse(StringUtil.matchesFuzzy("cat", "elephant", 1)); // very different
-        assertFalse(StringUtil.matchesFuzzy("test", "abc", 2)); // distance = 4
+        assertFalse(StringUtil.isWithinEditDistance("john", "dog", 1)); // distance = 3
+        assertFalse(StringUtil.isWithinEditDistance("cat", "elephant", 1)); // very different
+        assertFalse(StringUtil.isWithinEditDistance("test", "abc", 2)); // distance = 4
 
         // Distance exactly exceeds threshold
-        assertFalse(StringUtil.matchesFuzzy("kitten", "sitting", 2)); // distance = 3
-        assertFalse(StringUtil.matchesFuzzy("abc", "xyz", 2)); // all different
+        assertFalse(StringUtil.isWithinEditDistance("kitten", "sitting", 2)); // distance = 3
+        assertFalse(StringUtil.isWithinEditDistance("abc", "xyz", 2)); // all different
     }
 
     @Test
-    public void matchesFuzzy_zeroThreshold_exactMatchOnly() {
+    public void isWithinEditDistance_zeroThreshold_exactMatchOnly() {
         // Exact matches pass
-        assertTrue(StringUtil.matchesFuzzy("john", "john", 0));
+        assertTrue(StringUtil.isWithinEditDistance("john", "john", 0));
 
         // Any difference fails
-        assertFalse(StringUtil.matchesFuzzy("john", "joan", 0));
-        assertFalse(StringUtil.matchesFuzzy("robert", "rupert", 0));
+        assertFalse(StringUtil.isWithinEditDistance("john", "joan", 0));
+        assertFalse(StringUtil.isWithinEditDistance("robert", "rupert", 0));
     }
 
     @Test
-    public void matchesFuzzy_emptyStrings_handledCorrectly() {
+    public void isWithinEditDistance_emptyStrings_handledCorrectly() {
         // Both empty - should match
-        assertTrue(StringUtil.matchesFuzzy("", "", 0));
-        assertTrue(StringUtil.matchesFuzzy("", "", 1));
-        assertTrue(StringUtil.matchesFuzzy("", "", 10));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 0));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 1));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 10));
 
         // One empty, other non-empty - should not match
-        assertFalse(StringUtil.matchesFuzzy("", "word", 0));
-        assertFalse(StringUtil.matchesFuzzy("", "word", 10));
-        assertFalse(StringUtil.matchesFuzzy("word", "", 0));
-        assertFalse(StringUtil.matchesFuzzy("word", "", 10));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 0));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 10));
+        assertFalse(StringUtil.isWithinEditDistance("word", "", 0));
+        assertFalse(StringUtil.isWithinEditDistance("word", "", 10));
     }
 
     @Test
-    public void matchesFuzzy_singleCharacters_worksCorrectly() {
+    public void isWithinEditDistance_singleCharacters_worksCorrectly() {
         // Same single character
-        assertTrue(StringUtil.matchesFuzzy("a", "a", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "a", 0));
 
         // Different single characters
-        assertFalse(StringUtil.matchesFuzzy("a", "b", 0));
-        assertTrue(StringUtil.matchesFuzzy("a", "b", 1)); // substitution distance = 1
+        assertFalse(StringUtil.isWithinEditDistance("a", "b", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "b", 1)); // substitution distance = 1
 
         // Single character to multi-character
-        assertFalse(StringUtil.matchesFuzzy("a", "abc", 0));
-        assertTrue(StringUtil.matchesFuzzy("a", "abc", 2)); // need deletions/insertions
+        assertFalse(StringUtil.isWithinEditDistance("a", "abc", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "abc", 2)); // need deletions/insertions
     }
 
     @Test
-    public void matchesFuzzy_realWorldTypoExamples_worksCorrectly() {
+    public void isWithinEditDistance_realWorldTypoExamples_worksCorrectly() {
         // Common typos with threshold 1
-        assertTrue(StringUtil.matchesFuzzy("name", "nme", 1)); // deletion
-        assertTrue(StringUtil.matchesFuzzy("address", "adress", 1)); // deletion
+        assertTrue(StringUtil.isWithinEditDistance("name", "nme", 1)); // deletion
+        assertTrue(StringUtil.isWithinEditDistance("address", "adress", 1)); // deletion
 
         // Typos that exceed threshold
-        assertFalse(StringUtil.matchesFuzzy("johnny", "jhny", 1)); // 2 deletions
+        assertFalse(StringUtil.isWithinEditDistance("johnny", "jhny", 1)); // 2 deletions
     }
 
     @Test
-    public void matchesFuzzy_largeThreshold_alwaysMatches() {
+    public void isWithinEditDistance_largeThreshold_alwaysMatches() {
         // With very large threshold, almost any strings match
-        assertTrue(StringUtil.matchesFuzzy("completely", "different", 100));
-        assertTrue(StringUtil.matchesFuzzy("a", "zzzzzzzzzzz", 100));
+        assertTrue(StringUtil.isWithinEditDistance("completely", "different", 100));
+        assertTrue(StringUtil.isWithinEditDistance("a", "zzzzzzzzzzz", 100));
 
         // Except when one is empty and other is not, unless both are empty
-        assertFalse(StringUtil.matchesFuzzy("", "word", 100));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 100));
     }
 
     @Test
-    public void matchesFuzzy_specialCharacters_handled() {
+    public void isWithinEditDistance_specialCharacters_handled() {
         // Strings with special characters
-        assertTrue(StringUtil.matchesFuzzy("test@email.com", "test@email.com", 0));
-        assertTrue(StringUtil.matchesFuzzy("test-name", "test-name", 0));
+        assertTrue(StringUtil.isWithinEditDistance("test@email.com", "test@email.com", 0));
+        assertTrue(StringUtil.isWithinEditDistance("test-name", "test-name", 0));
 
         // Special character differences
         // requires 1 deletion
-        assertFalse(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 0));
-        assertTrue(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 1));
+        assertFalse(StringUtil.isWithinEditDistance("test@email.com", "testemail.com", 0));
+        assertTrue(StringUtil.isWithinEditDistance("test@email.com", "testemail.com", 1));
     }
 }
