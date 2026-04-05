@@ -118,6 +118,10 @@ public class StringUtil {
         requireNonNull(keyword);
         requireNonNull(target);
 
+        // Verify pre-conditions
+        assert keyword.equals(normalizeForFuzzyMatching(keyword)) : "keyword must be normalized";
+        assert target.equals(normalizeForFuzzyMatching(target)) : "target must be normalized";
+
         int n = keyword.length();
         int m = target.length();
 
@@ -187,12 +191,15 @@ public class StringUtil {
      * @param threshold the maximum allowed edit distance for a match
      * @return true if {@code target} is within {@code threshold} edits of {@code keyword}, false otherwise
      * @throws NullPointerException if {@code keyword} or {@code target} is null
-     * @throws IllegalArgumentException if {@code threshold} is negative
      */
     public static boolean isWithinEditDistance(String keyword, String target, int threshold) {
         requireNonNull(keyword);
         requireNonNull(target);
-        checkArgument(threshold >= 0, "Threshold cannot be negative");
+
+        // Verify pre-conditions
+        assert keyword.equals(normalizeForFuzzyMatching(keyword)) : "keyword must be normalized";
+        assert target.equals(normalizeForFuzzyMatching(target)) : "target must be normalized";
+        assert threshold >= 0 : "threshold must be non-negative";
 
         // Handle empty strings after trimming
         if (keyword.isEmpty() || target.isEmpty()) {
