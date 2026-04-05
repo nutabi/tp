@@ -79,6 +79,11 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     private boolean isFuzzyMatch(String token, String keyword) {
         int threshold = computeThreshold(keyword);
 
+        // Optimisation to avoid expensive distance calculation if lengths differ too much
+        if (Math.abs(token.length() - keyword.length()) > threshold) {
+            return false;
+        }
+
         return StringUtil.matchesFuzzy(token, keyword, threshold);
     }
 
