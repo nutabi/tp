@@ -7,8 +7,10 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
 
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -39,6 +41,8 @@ public class ClearTagCommand extends Command {
     public static final String MESSAGE_NO_TAGS_FOUND = "No %1$s tags found to clear.";
     public static final String MESSAGE_UNDO_SUCCESS = "Undo clear %1$s tags for: %2$s";
     public static final String MESSAGE_UNDO_FAILURE = "Cannot undo clear tag before command execution.";
+
+    private static final Logger logger = LogsCenter.getLogger(ClearTagCommand.class);
 
     private final Index index;
     private final TagType typeToClear;
@@ -92,20 +96,30 @@ public class ClearTagCommand extends Command {
         return new CommandResult(String.format(MESSAGE_SUCCESS, typeToClear, removedTags));
     }
 
+    /**
+     * @return {@code true} since clearing tags can be undone by restoring
+     * the person's original tags.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * Restores the person to their original state before the specified tags were cleared.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the original or updated person state was not recorded,
+     *                          meaning the clear tag operation cannot be undone.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
-        requireNonNull(model);
-        if (originalPerson == null || updatedPerson == null) {
-            throw new CommandException(MESSAGE_UNDO_FAILURE);
-        }
-
-        model.setPerson(updatedPerson, originalPerson);
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, typeToClear, Messages.format(originalPerson)));
+        return undoPersonChange(model, originalPerson, updatedPerson,
+                MESSAGE_UNDO_FAILURE, logger,
+                () -> "Undid " + COMMAND_WORD + ": " + typeToClear + " for " + originalPerson.getName(),
+                () -> new CommandResult(
+                        String.format(MESSAGE_UNDO_SUCCESS, typeToClear, Messages.format(originalPerson))));
     }
 
     @Override

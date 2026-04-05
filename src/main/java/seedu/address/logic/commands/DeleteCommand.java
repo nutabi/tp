@@ -82,11 +82,24 @@ public class DeleteCommand extends Command {
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 
+    /**
+     * @return {@code true} since deleting a person can be undone by restoring
+     * the deleted person to the address book.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * Restores the deleted person to the address book, inserting them back
+     * at their original position if possible.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the delete operation was not previously executed,
+     *                          or if the person already exists in the model.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);

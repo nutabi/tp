@@ -8,7 +8,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -39,6 +41,8 @@ public class UntagCommand extends Command {
     public static final String MESSAGE_NO_TAGS_FOUND = "None of the specified tags were found.";
     public static final String MESSAGE_UNDO_SUCCESS = "Undo untag operation for: %1$s";
     public static final String MESSAGE_UNDO_FAILURE = "Cannot undo untag before command execution.";
+
+    private static final Logger logger = LogsCenter.getLogger(UntagCommand.class);
 
     private final Index index;
     private final Set<Tag> tagsToRemove;
@@ -91,20 +95,29 @@ public class UntagCommand extends Command {
         return new CommandResult(String.format(MESSAGE_SUCCESS, result.removedTags));
     }
 
+    /**
+     * @return {@code true} since removing tags can be undone by restoring
+     * the person's original tags.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * Restores the person to their original state before the tags were removed.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the untag operation was not previously executed,
+     *                          meaning the original state cannot be restored.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
-        requireNonNull(model);
-        if (originalPerson == null || updatedPerson == null) {
-            throw new CommandException(MESSAGE_UNDO_FAILURE);
-        }
-
-        model.setPerson(updatedPerson, originalPerson);
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson)));
+        return undoPersonChange(model, originalPerson, updatedPerson,
+                MESSAGE_UNDO_FAILURE, logger,
+                () -> "Undid " + COMMAND_WORD + ": " + updatedPerson.getName() + " -> " + originalPerson.getName(),
+                () -> new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson))));
     }
 
     @Override

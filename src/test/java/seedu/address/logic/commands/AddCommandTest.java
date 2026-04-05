@@ -146,6 +146,7 @@ public class AddCommandTest {
         assertEquals(expectedMessage, commandResult.getFeedbackToUser());
     }
 
+    @Test
     public void undo_afterExecute_removesPerson() {
         Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
         Model expectedBefore = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -156,12 +157,20 @@ public class AddCommandTest {
         expectedAfterAdd.addPerson(toAdd);
 
         assertCommandSuccess(addCommand, model,
-                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd)),
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd))
+                        + "\n" + Messages.MESSAGE_NON_NUS_EMAIL,
                 expectedAfterAdd);
 
         assertUndoSuccess(addCommand, model,
                 String.format(AddCommand.MESSAGE_UNDO_SUCCESS, Messages.format(toAdd)),
                 expectedBefore);
+    }
+
+    @Test
+    public void undo_beforeExecute_throwsCommandException() {
+        Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+        AddCommand addCommand = new AddCommand(new PersonBuilder(HOON).build());
+        assertUndoFailure(addCommand, model, AddCommand.MESSAGE_UNDO_FAILURE);
     }
 
 

@@ -29,11 +29,23 @@ public class ClearCommand extends Command {
         return new CommandResult(MESSAGE_SUCCESS);
     }
 
+    /**
+     * @return {@code true} since a clear operation can be undone by restoring
+     * the previous state of the address book.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * Restores the address book to its state before the clear command was executed.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If there is no previously saved address book state,
+     *                          meaning the clear command cannot be undone.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);

@@ -5,6 +5,7 @@ import seedu.address.model.Model;
 /**
  * Requests the application to undo the most recent undoable command.
  * This command is handled by {@code LogicManager}.
+ * Logic of undo is handled by each undoable {@code Command} class.
  */
 public class UndoCommand extends Command {
 

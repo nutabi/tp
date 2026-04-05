@@ -126,33 +126,34 @@ public class EditCommand extends Command {
         return personToEdit;
     }
 
+    /**
+     * @return {@code true} since editing a person can be undone by restoring
+     * the person's original details.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
     /**
-     * {@inheritDoc}
+     * Restores the person to their original state before the edit.
      *
-     * <p>Restores the person that was edited back to their original state before
-     * {@link #execute(Model)} was called.
-     *
-     * @throws CommandException if the command has not been executed yet, or if restoring
-     *         the original person would create a duplicate.
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the edit operation was not previously executed,
+     *                          or if restoring the original person would create a duplicate.
      */
     @Override
     public CommandResult undo(Model model) throws CommandException {
-        requireNonNull(model);
         if (originalPerson == null || updatedPerson == null) {
             throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
 
         throwIfDuplicate(model, updatedPerson, originalPerson);
-
-        model.setPerson(updatedPerson, originalPerson);
-        logger.info("Undid edit: " + updatedPerson.getName() + " -> " + originalPerson.getName());
-
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson)));
+        return undoPersonChange(model, originalPerson, updatedPerson,
+                MESSAGE_UNDO_FAILURE, logger,
+                () -> "Undid " + COMMAND_WORD + ": " + updatedPerson.getName() + " -> " + originalPerson.getName(),
+                () -> new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson))));
     }
 
     /**

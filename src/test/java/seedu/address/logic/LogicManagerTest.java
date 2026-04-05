@@ -105,6 +105,11 @@ public class LogicManagerTest {
     }
 
     @Test
+    public void execute_undoWithExtraArguments_throwsParseException() {
+        assertParseException(UndoCommand.COMMAND_WORD + " test", UndoCommand.MESSAGE_NO_PARAMETER);
+    }
+
+    @Test
     public void execute_undoAfterAdd_removesPerson() throws Exception {
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY;
         logic.execute(addCommand);
