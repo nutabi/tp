@@ -43,6 +43,7 @@ public class NameContainsKeywordsPredicateTest {
         assertTrue(secondPredicate.equals(new NameContainsKeywordsPredicate(thirdPredicateKeywordList)));
     }
 
+    //============================== SUCCESS CASES ===================================
     @Test
     public void test_nameContainsKeywords_returnsTrue() {
         // One keyword
@@ -79,6 +80,7 @@ public class NameContainsKeywordsPredicateTest {
         assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
     }
 
+    //============================== FAILURE CASES ===================================
     @Test
     public void test_nameDoesNotContainKeywords_returnsFalse() {
         // Zero keywords
