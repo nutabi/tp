@@ -68,7 +68,7 @@ public class EmailContainsKeywordsPredicateTest {
         predicate = new EmailContainsKeywordsPredicate(List.of("gmail", "yahoo"));
         assertTrue(predicate.test(alice));
 
-        // Case-insensitive match
+        // Case-insensitive match (Boundary Value)
         predicate = new EmailContainsKeywordsPredicate(List.of("aLIce@GMAIL.com"));
         assertTrue(predicate.test(alice));
     }

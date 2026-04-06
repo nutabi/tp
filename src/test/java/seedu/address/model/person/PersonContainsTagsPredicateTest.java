@@ -41,6 +41,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of("friends"));
 
+        // Alice has friends tag
         assertTrue(predicate.test(ALICE));
     }
 
@@ -49,6 +50,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of("friends", "colleagues"));
 
+        // Alice has friends tag but not colleagues tag, while Benson has friends tag but not colleagues tag.
         assertTrue(predicate.test(ALICE));
         assertTrue(predicate.test(BENSON));
     }
@@ -58,6 +60,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of("unknown"));
 
+        // Alice does not have the "unknown" tag.
         assertFalse(predicate.test(ALICE));
     }
 
@@ -66,6 +69,7 @@ public class PersonContainsTagsPredicateTest {
         PersonContainsTagsPredicate predicate =
                 new PersonContainsTagsPredicate(List.of("FRIENDS"));
 
+        // Boundary value
         // Input tags are normalized to lowercase, so matching is case-insensitive.
         assertTrue(predicate.test(ALICE));
     }
