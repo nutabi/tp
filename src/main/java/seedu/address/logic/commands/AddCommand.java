@@ -70,11 +70,22 @@ public class AddCommand extends Command {
         return new CommandResult(resultMessage);
     }
 
+    /**
+     * @return {@code true} since an add operation can be undone by removing the added person.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * The undo operation removes the person that was previously added to the model.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the person to be removed no longer exists in the model,
+     *                          and thus the undo operation cannot be completed.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);
@@ -82,7 +93,7 @@ public class AddCommand extends Command {
             throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
         model.deletePerson(toAdd);
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(toAdd)));
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, toAdd);
     }
 
     @Override

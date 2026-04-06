@@ -82,26 +82,30 @@ public class DeleteCommand extends Command {
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 
+    /**
+     * @return {@code true} since deleting a person can be undone by restoring
+     *      the deleted person to the address book.
+     */
     @Override
     public boolean isUndoable() {
         return true;
     }
 
+    /**
+     * Restores the deleted person to the address book, inserting them back
+     * at their original position if possible.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the delete operation was not previously executed,
+     *                          or if the person already exists in the model.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);
-        if (deletedPerson == null) {
-            throw new CommandException("Cannot undo delete before command execution.");
-        }
-        if (model.hasPerson(deletedPerson)) {
-            throw new CommandException(MESSAGE_UNDO_FAILURE);
-        }
-        if (deletedPersonIndex < 0 || deletedPersonIndex > model.getAddressBook().getPersonList().size()) {
-            model.addPerson(deletedPerson);
-        } else {
-            model.addPerson(deletedPersonIndex, deletedPerson);
-        }
-        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(deletedPerson)));
+        validateUndoable(model);
+        restoreDeletedPerson(model);
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, deletedPerson);
     }
 
     @Override
@@ -136,5 +140,36 @@ public class DeleteCommand extends Command {
                                 String.format(MESSAGE_PERSON_NOT_FOUND_DISPLAYED_EMAIL, targetEmail)
                         )
                 );
+    }
+
+    /**
+     * Verifies that this command can be undone.
+     *
+     * @param model The model containing the current state of the address book.
+     * @throws CommandException If the command has not been executed before,
+     *                          or if the deleted person already exists in the model.
+     */
+    private void validateUndoable(Model model) throws CommandException {
+        if (deletedPerson == null) {
+            throw new CommandException("Cannot undo delete before command execution.");
+        }
+        if (model.hasPerson(deletedPerson)) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+    }
+
+    /**
+     * Restores the previously deleted person to the address book.
+     * Inserts the person back at their original index when it is still valid;
+     * otherwise appends them to the end of the list.
+     *
+     * @param model The model containing the current state of the address book.
+     */
+    private void restoreDeletedPerson(Model model) {
+        if (deletedPersonIndex < 0 || deletedPersonIndex > model.getAddressBook().getPersonList().size()) {
+            model.addPerson(deletedPerson);
+            return;
+        }
+        model.addPerson(deletedPersonIndex, deletedPerson);
     }
 }
