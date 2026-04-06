@@ -52,13 +52,16 @@ public class FindCommandTest {
         assertFalse(findFirstCommand.equals(findSecondCommand));
     }
 
+    //============================== One Person Found ===================================
     @Test
     public void execute_nameKeywords_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate =
                 new NameEmailTagPredicate(List.of("Elle"), List.of(), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ELLE), model.getFilteredPersonList());
     }
@@ -66,10 +69,12 @@ public class FindCommandTest {
     @Test
     public void execute_misspelledNameKeywords_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate =
                 new NameEmailTagPredicate(List.of("Ellie"), List.of(), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ELLE), model.getFilteredPersonList());
     }
@@ -77,89 +82,63 @@ public class FindCommandTest {
     @Test
     public void execute_emailKeywords_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate =
                 new NameEmailTagPredicate(List.of(), List.of("heinz"), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(CARL), model.getFilteredPersonList());
     }
 
     @Test
-    public void execute_tagKeywords_multiplePersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(), List.of("friends"));
+    public void execute_uniqueTagKeyword_onePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
 
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(), List.of("owesMoney"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(ALICE, BENSON, DANIEL), model.getFilteredPersonList());
-    }
 
-    @Test
-    public void execute_multipleTagKeywords_multiplePersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(),
-                List.of("student", "owesMoney"));
-
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
+        assertEquals(List.of(BENSON), model.getFilteredPersonList());
     }
 
     @Test
     public void execute_nameAndEmailKeywords_onePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate =
                 new NameEmailTagPredicate(List.of("Fiona"), List.of("example.com"), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(FIONA), model.getFilteredPersonList());
     }
 
     @Test
-    public void execute_nameMatchesEmailFails_noPersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        NameEmailTagPredicate predicate =
-                new NameEmailTagPredicate(List.of("Alice"), List.of("allycia@example.com"), List.of());
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(), model.getFilteredPersonList());
-    }
-
-    @Test
     public void execute_nameAndTagMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"),
                 List.of(), List.of("friends"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
     }
 
     @Test
-    public void execute_nameMatchesTagFails_returnsEmptyList() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"), List.of(),
-                List.of("nonexistent"));
-
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(), model.getFilteredPersonList());
-    }
-
-    @Test
     public void execute_emailAndTagMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(),
                 List.of("alice"), List.of("friends"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
     }
@@ -167,61 +146,26 @@ public class FindCommandTest {
     @Test
     public void execute_allFieldsMatchSingle_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
                 List.of("Alice"), List.of("example.com"), List.of("friends"));
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
     }
 
     @Test
-    public void execute_allFieldsMatchMultiple_multiplePersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice", "Benson"),
-                List.of("example"),
-                List.of("student", "owesMoney"));
-
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_oneFieldFails_noPersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice"), List.of("wrongemail"), List.of("friends"));
-
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_multipleNameKeywords_multiplePersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice", "Benson"), List.of(), List.of());
-
-        FindCommand command = new FindCommand(predicate);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
-    }
-
-    @Test
     public void execute_partialNameMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
                 List.of("Ali"), List.of(), List.of());
-
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
     }
@@ -229,13 +173,151 @@ public class FindCommandTest {
     @Test
     public void execute_partialEmailMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
                 List.of(), List.of("ce@example.com"), List.of());
-
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
+    }
+
+    //========================== Multiple Persons Found ===================================
+    @Test
+    public void execute_sharedTagKeywords_multiplePersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(), List.of("friends"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE, BENSON, DANIEL), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_multipleNameKeywords_multiplePersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice", "Benson"), List.of(), List.of());
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_multipleTagKeywords_multiplePersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(),
+                List.of("student", "owesMoney"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_allFieldsMatchMultiple_multiplePersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice", "Benson"),
+                List.of("example"),
+                List.of("student", "owesMoney"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
+    }
+
+    //============================== No Persons Found ===================================
+    @Test
+    public void execute_nameFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate =
+                new NameEmailTagPredicate(List.of("Apasaja"), List.of(""), List.of());
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_emailFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate =
+                new NameEmailTagPredicate(List.of(), List.of("alicia@example.com"), List.of());
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_tagFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(),
+                List.of("nonexistent"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_nameMatchesEmailFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice"),
+                List.of("Apasaja@gmail.com"),
+                List.of());
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_nameMatchesTagFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"), List.of(),
+                List.of("nonexistent"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_AllFieldsFail_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Apasaja"),
+                List.of("Apasaja@gmail.com"),
+                List.of("nonexistent"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
     }
 
     @Test
