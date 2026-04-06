@@ -42,7 +42,7 @@ Type any command in the command box and press **Enter** to execute it.
 
 ## Known Issues
 
-- **Multi-screen issue:** If the app is moved to a secondary screen and you later switch to using only the primary screen, the GUI may open off-screen. Fix: delete `preferences.json` and relaunch the app.
+- **Multiscreen issue:** If the app is moved to a secondary screen and you later switch to using only the primary screen, the GUI may open off-screen. Fix: delete `preferences.json` and relaunch the app.
 
 ---
 
