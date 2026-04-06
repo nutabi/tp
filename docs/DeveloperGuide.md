@@ -377,214 +377,178 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
 (For all use cases below, the **System** is the `CampusBridge` and the **Actor** is the `user`, unless specified otherwise)
 
-#### Use Case: UC01 - Getting Help
+#### Use case: UC01 - Getting help
+
 **Preconditions: Application is running**
 
 **MSS:**
 1. User requests for help.
 2. CampusBridge displays the relevant section of the user guide.
 
+Use case ends.
+
 **Extension:**
 
 * 1a. User provides an unrecognised command name.
-  * 1a1. CampusBridge shows an error listing all valid commands.
+  * 1a1. CampusBridge shows an error message indicating the command name does not exist and list all the valid commands.
+  
   Use case ends.
 
 * 1b. User provides more than one word.
-  * 1b1. CampusBridge shows an invalid command format error.
+  * 1b1. CampusBridge shows an error message indicating invalid command format.
+  
   Use case ends.
 
-Use case ends.
 
-#### Use Case: UC02 - Add a contact
+#### Use case: UC02 - Add a contact
 
 **Preconditions: Application is running**
 
 **MSS:**
 1. User requests to add a contact.
 2. User provides the contact details.
-3. CampusBridge validates the input.
-4. CampusBridge adds the contact and updates the contact list.
-5. CampusBridge shows a success message.
+3. CampusBridge adds the contact and updates the contact list.
+4. CampusBridge shows a success message.
 
 Use case ends.
 
 **Extension:**
-* 3a. Input does not follow the specified format.
-  * 3a1. CampusBridge shows an error message indicating the invalid format.
-  * 3a2. CampusBridge requests the user to re-enter input.
-  * 3a3. User enters a new input.
-
-  Steps 3a1 - 3a3 are repeated until input is valid.
-  Use case resumes at step 4.
-
-* 3b. Email or Telegram handle already exists in the contact list.
-  * 3b1. CampusBridge shows a failure message indicating that the contact already exists.
+* 2a. User provides an invalid input.
+  * 2a1. CampusBridge shows an error message indicating invalid command format.
 
   Use case ends.
 
-* 4a. Contact cannot be added.
-  * 4a1. CampusBridge shows an error message indicating the contact could not be added.
-
-  Use case ends.
-
-* 4b. Storage file cannot be written or accessed.
-  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+* 2b. Email or Telegram handle already exists in the contact list.
+  * 2b1. CampusBridge shows an error message indicating the contact already exists.
 
   Use case ends.
 
 
-#### Use Case: UC03 - Edit a contact
+#### Use case: UC03 - Edit a contact
 
 **Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
-1. User <ins>requests to list contacts (UC04)</ins>.
+1. User <ins>requests to list contacts (UC08)</ins>.
 2. User requests to edit a contact in the list.
 3. User provides new contact details for that contact.
-4. CampusBridge validates the input.
-5. CampusBridge edits the contact and updates the contact list.
-6. CampusBridge shows a success message.
+4. CampusBridge edits the contact and updates the contact list.
+5. CampusBridge shows a success message.
 
 Use case ends.
 
 **Extension:**
-* 4a. Target contact identifier does not exist.
-  * 4a1. CampusBridge shows an error message indicating the contact does not exist.
+* 3a. User provides an invalid input.
+  * 3a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-* 4b. Input does not follow the specified format.
-  * 4b1. CampusBridge shows an error message indicating the invalid format.
-  * 4b2. CampusBridge requests the user to re-enter input.
-  * 4b3. User enters a new input.
-
-  Steps 4b1 - 4b3 are repeated until input is valid.
-  Use case resumes at step 5.
-
-* 5a. Contact cannot be updated.
-  * 5a1. CampusBridge shows an error message indicating the contact could not be updated.
+* 3b. Specified contact does not exist.
+  * 3b1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
-* 5b. Storage file cannot be written or accessed.
-  * 5b1. CampusBridge shows an error message indicating the contact list could not be saved.
+* 3c. Email or Telegram handle already exists in the contact list.
+  * 3c1. CampusBridge shows an error message indicating the contact already exists.
 
   Use case ends.
 
 
-#### Use Case: UC04 - Delete a contact
+#### Use case: UC04 - Delete a contact
 
 **Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
-1. User <ins>requests to list contacts (UC04)</ins>.
+1. User <ins>requests to list contacts (UC08)</ins>.
 2. User requests to delete a contact in the list.
-3. CampusBridge validates the input.
-4. CampusBridge deletes the contact and updates the contact list.
-5. CampusBridge shows a success message.
+3. CampusBridge deletes the contact and updates the contact list.
+4. CampusBridge shows a success message.
 
 Use case ends.
 
 **Extensions:**
-* 3a. Target contact identifier does not exist.
-  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+* 2a. User provides an invalid input.
+  * 2a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-* 3b. Input does not follow the specified format.
-  * 3b1. CampusBridge shows an error message indicating the invalid format.
-  * 3b2. CampusBridge requests the user to re-enter input.
-  * 3b3. User enters a new input.
-
-  Steps 3b1 - 3b3 are repeated until input is valid.
-  Use case resumes at step 4.
-
-* 4a. Contact cannot be deleted.
-  * 4a1. CampusBridge shows an error message indicating the contact could not be deleted.
+* 2b. Specified contact does not exist.
+  * 2b1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
-* 4b. Storage file cannot be written or accessed.
-  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
 
-  Use case ends.
-
-#### Use Case: UC05 - Add a tag to an existing contact
+#### Use case: UC05 - Add tags to an existing contact
 
 **Preconditions: Application is running and the user has added a contact.**
 
 **MSS:**
-1. User requests to tag a contact in the list.
-2. User provides tag details for that contact.
-3. CampusBridge validates the input.
-4. CampusBridge adds the tag and updates the contact list.
+1. User <ins>requests to list contacts (UC08)</ins>.
+2. User requests to add tags to a contact in the list.
+3. User provides tag details for that contact.
+4. CampusBridge adds the tags and updates the contact list.
 5. CampusBridge shows a success message.
 
 Use case ends.
 
 **Extensions:**
-* 3a. Target contact identifier does not exist.
-  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+* 3a. User provides an invalid input.
+  * 3a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-* 3b. Input does not follow the specified format.
-  * 3b1. CampusBridge shows an error message indicating the invalid format.
-  * 3b2. CampusBridge requests the user to re-enter input.
-  * 3b3. User enters a new input.
-
-  Steps 3b1 - 3b3 are repeated until input is valid.
-  Use case resumes at step 4.
-
-* 3c. Tag already exists for contact.
-  * 3c1. CampusBridge informs user that the contact already has this tag.
+* 3b. Specified contact does not exist.
+  * 3b1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
-* 4a. Tag cannot be added.
-  * 4a1. CampusBridge shows an error message indicating the tag could not be added.
+* 3c. All specified tags already exist on the contact.
+  * 3c1. CampusBridge shows an error message indicating the contact already has these tags.
 
   Use case ends.
 
-* 4b. Storage file cannot be written or accessed.
-  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+* 4a. Some (but not all) specified tags already exist on the contact.
+  * 4a1. CampusBridge adds only new tags and updates the contact list.
+  * 4a2. CampusBridge shows a success message indicating the new tags added and the tags skipped.
 
   Use case ends.
 
-#### Use Case: UC06 - Remove a Tag from a Contact
+
+#### Use case: UC06 - Remove tags from a contact
+
 **Preconditions: Application is running**
 
 **MSS:**
-1. User requests to remove one or more tags from a contact.
-2. CampusBridge removes the specified tags and displays the updated contact.
+1. User <ins>requests to list contacts (UC08)</ins>.
+2. User requests to remove one or more tags from a contact.
+3. CampusBridge removes the specified tags and displays the updated contact.
 
 Use case ends.
 
 **Extensions:**
-* 1a. Input does not follow the specified format.
-  * 1a1. CampusBridge shows an invalid command format error.
+* 2a. User provides an invalid input.
+  * 2a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-* 1b. Specified contact does not exist.
-  * 1b1. CampusBridge shows an error indicating the contact does not exist.
+* 2b. Specified contact does not exist.
+  * 2b1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
-* 1c. None of the specified tags exist on the contact.
-  * 1c1. CampusBridge shows an error indicating none of the tags were found.
+* 2c. None of the specified tags exist on the contact.
+  * 2c1. CampusBridge shows an error indicating none of the tags were found.
 
   Use case ends.
 
-* 2a. Some but not all specified tags exist on the contact.
-  * 2a1. CampusBridge removes the existing tags and displays the updated contact.
-  * 2a2. CampusBridge informs the user which tags were not found.
+* 3a. Some (but not all) specified tags exist on the contact.
+  * 3a1. CampusBridge removes the existing tags and displays the updated contact.
+  * 3a2. CampusBridge informs the user which tags were not found.
 
   Use case ends.
 
 
-#### Use Case: UC07 - Clearing all tags of a type from a contact
+#### Use case: UC07 - Clearing all tags of a type from a contact
 
 **Preconditions: Application is running**
 
@@ -597,31 +561,24 @@ Use case ends.
 Use case ends.
 
 **Extensions:**
-* 2a. Target contact identifier does not exist.
-    * 2a1. CampusBridge shows an error message indicating the contact does not exist.
+* 2a. User provides an invalid input.
+  * 2a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-* 2b. Input does not follow the specified format.
-    * 2b1. CampusBridge shows an error message indicating the invalid format.
-    * 2b2. CampusBridge requests the user to re-enter input.
-    * 2b3. User enters a new input.
+* 2b. Specified contact does not exist.
+  * 2b1. CampusBridge shows an error message indicating the contact does not exist.
 
-  Steps 2b1 - 2b3 are repeated until input is valid.
-  Use case resumes at step 3.
+  Use case ends.
 
 * 2c. No tags of specified type exist.
-    * 2c1. CampusBridge shows an error indicating no tags found to clear.
-
-  Use case ends.
-
-* 3a. Storage file cannot be written or accessed.
-    * 3a1. CampusBridge shows an error message indicating the contact list could not be saved.
+  * 2c1. CampusBridge shows an error indicating no tags found to clear.
 
   Use case ends.
 
 
-#### Use Case: UC08 - Listing All Contacts
+#### Use case: UC08 - Listing all contacts
+
 **Preconditions: Application is running**
 
 **MSS:**
@@ -632,58 +589,54 @@ Use case ends.
 
 **Extensions:**
 * 1a. User provides extra arguments.
-  * 1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
 
-#### Use Case: UC09 - Sorting contacts
+#### Use case: UC09 - Sorting contacts
+
 **Preconditions: Application is running**
 
 **MSS:**
 1. User requests to sort contacts.
 2. User provides sort field (name/email/phone/reset) and optional reverse order.
-3. CampusBridge validates the input.
-4. CampusBridge sorts the contacts based on the specified criteria.
-5. CampusBridge displays the list of contacts in the specified sorted order.
+3. CampusBridge sorts the contacts based on the specified criteria.
+4. CampusBridge displays the list of contacts in the specified sorted order.
 
 Use case ends.
 
 **Extensions:**
+* 2a. User provides an invalid input.
+  * 2a1. CampusBridge shows an error message indicating the invalid command format.
 
-* 3a. Input does not follow the specified format.
-  * 3a1. CampusBridge shows an invalid command format error.
-  
   Use case ends.
 
-#### Use Case: UC10 - Search contacts
+
+#### Use case: UC10 - Search contacts
 
 **Preconditions: Application is running**
 
 **MSS:**
 1. User requests to search for contacts.
 2. User provides the search details.
-3. CampusBridge validates the input.
-4. CampusBridge shows the contacts matching the search query.
+3. CampusBridge shows the contacts matching the search query.
 
 Use case ends.
 
 **Extensions:**
-* 3a. Input does not follow the specified format.
-  * 3a1. CampusBridge shows an error message indicating the invalid format.
-  * 3a2. CampusBridge requests the user to re-enter input.
-  * 3a3. User enters a new input.
+* 2a. User provides an invalid input.
+    * 2a1. CampusBridge shows an error message indicating the invalid command format.
 
-  Steps 3a1 - 3a3 are repeated until input is valid.
-  Use case resumes at step 4.
+  Use case ends.
 
-* 4a. No contacts exist in the list.
-  * 4a1. CampusBridge informs the user that no contacts match the search query.
+* 3a. No contacts exist in the list.
+  * 3a1. CampusBridge informs the user that no contacts match the search query.
 
   Use case ends.
 
 
-#### Use Case: UC11 - Undo previous action
+#### Use case: UC11 - Undo previous action
 
 **Preconditions: Application is running**
 
@@ -708,12 +661,9 @@ Use case ends.
 
   Use case ends.
 
-* 5a. Storage file cannot be written or accessed.
-  * 5a1. CampusBridge shows an error message indicating the state could not be saved.
 
-  Use case ends.
+#### Use case: UC12 - Navigating command history
 
-#### Use Case: UC12 - Navigating Command History
 **Preconditions: Application is running**
 
 **MSS:**
@@ -744,7 +694,8 @@ Use case ends.
 
   Use case resumes at step 1.
 
-#### Use Case: UC13 - Clearing all contacts
+#### Use case: UC13 - Clearing all contacts
+
 **Preconditions: Application is running**
 
 **MSS:**
@@ -755,11 +706,13 @@ Use case ends.
 
 **Extensions:**
 * 1a. User provides extra arguments.
-  * 1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-#### Use Case: UC14 - Exiting
+
+#### Use case: UC14 - Exiting
+
 **Preconditions: Application is running**
 
 **MSS:**
@@ -770,11 +723,10 @@ Use case ends.
 
 **Extensions:**
 * 1a. User provides extra arguments.
-  * 1a1. CampusBridge shows an invalid command format error.
+  * 1a1. CampusBridge shows an error message indicating the invalid command format.
 
   Use case ends.
 
-Use case ends.
 
 ### Non-Functional Requirements
 
