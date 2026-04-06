@@ -19,7 +19,7 @@ CampusBridge is a **desktop app for managing contacts, optimized for use via a C
 
 1. Copy the file to the folder you want to use as the _home folder_ for your CampusBridge application.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar CampusBridge-v1.4.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar CampusBridge-v1.5.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -83,22 +83,24 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
 
 **Examples:**<br/>
-| Email | Valid? |
-|-------|--------|
-| `john.doe@example.com` | (correct domain)
-| `john+test@u.nus.edu` | (correct domain)
-| `.john@example.com` | (starts with special character) |
-| `john@example.c` | (domain label less than 2 characters) |
+
+| Email | Valid? | Reason |
+|-------|--------|--------|
+| `john.doe@example.com` | ✓ | Correct domain |
+| `john+test@u.nus.edu` | ✓ | Correct domain |
+| `.john@example.com` | ✗ | Starts with special character |
+| `john@example.c` | ✗ | Domain label less than 2 characters |
 
 **NUS domain check:**
 
 CampusBridge is designed for NUS students and staff. When adding or editing a contact:
 
-| Email domain | Behavior                                   |
-|--------------|--------------------------------------------|
-| `@u.nus.edu` (student) | No warning                                 |
-| `@nus.edu.sg` (staff) | No warning                                 |
-| Other domains | Warning shown (but contact is still added) |
+| Email domain            | Behavior                                   |
+|-------------------------|--------------------------------------------|
+| `@u.nus.edu` (student)  | No warning                                 |
+| `@nus.edu.sg` (staff)   | No warning                                 |
+| `@*.nus.edu.sg` (staff) | No warning                                 |
+| Other domains           | Warning shown (but contact is still added) |
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Note:**
 Non-NUS emails are still accepted, but a warning will be displayed to alert you that the email does not belong to an NUS domain.
@@ -163,6 +165,8 @@ Adds a person to the address book.
 * Email must be unique. You cannot add two persons with the same email address.
 * Telegram handle, if provided, must be unique. You cannot add two persons with the same Telegram handle.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
+* Repeated prefixes for single-valued fields are not allowed. For example, `add n/Amy n/Ben e/x@example.com` is invalid.
+* Prefixes meant for other commands, such as `t/`, `tr/`, `tc/`, `tg/`, `i/`, `o/`, and `r/`, are invalid in an `add` command.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 Parameters can be entered in any order, as long as each value is preceded by the correct prefix.
@@ -189,7 +193,7 @@ Edits an existing person in the address book.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
-If the updated email is not an NUS domain (`@u.nus.edu` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
+If the updated email is not an NUS domain (`@u.nus.edu` or `@*.nus.edu.sg` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
 </div>
 
 **Examples:**
@@ -249,7 +253,7 @@ Adds one or more tags to an existing person in the address book.
 **Format:** `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
 
 * The index **must be a positive integer** 1, 2, 3, …​
-* Tag names must be **alphanumeric** (no space or symbols).
+* Tag names must be **alphanumeric** (no spaces or special characters).
 * At least one of the optional fields must be provided.
 * Each tag must have a value after its prefix (e.g. tg/ alone is not allowed).
 * Multiple tags (of different or same types) can be added in a single command.
@@ -285,7 +289,7 @@ Removes one or more tags from an existing person in the address book.
 **Format:** `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
 
 * The index **must be a positive integer** 1, 2, 3, …​
-* Tag names must be **alphanumeric** (no space or symbols).
+* Tag names must be **alphanumeric** (no spaces or special characters).
 * At least one of the optional fields must be provided.
 * Each tag must have a value after its prefix (e.g. tg/ alone is not allowed).
 * Multiple tags (of different or same types) can be removed in a single command.
@@ -314,7 +318,7 @@ Removes the `tutor` role tag, `cs2103` course tag and `classmates` general tag f
 * `untag 3 tc/cs2103 tc/cs2109`<br/>
 Removes both `cs2103` and `cs2109` course tags from the 3rd person in the list.
 
-### Clearing tags of a specific type from a person : `cleartag`
+### Clearing all tags of a specific type : `cleartag`
 
 Clears all tags of a specific type from an existing person in the address book.
 
@@ -322,11 +326,11 @@ Clears all tags of a specific type from an existing person in the address book.
 
 * The index **must be a positive integer** 1, 2, 3, …​
 * **Exactly one tag type prefix** must be provided (without any tag names).
-* Only one tag type can be cleared at a time.
 
 **Behavior:**
 * Clears all tags of the specified type from the person at the given `INDEX`.
 * The index refers to the index number shown in the displayed person list.
+* Only one tag type can be cleared at a time.
 * Only tags of the specified type will be removed. Tags of other types remain unchanged.
 * If the person has no tags of the specified type, an error message will be shown.
 
@@ -535,7 +539,7 @@ If your changes to the data file makes its format invalid, CampusBridge will dis
 Furthermore, certain edits can cause CampusBridge to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
-### Clearing tags of multiple types from a person [coming in v2.0]
+### Clearing all tags of multiple types [coming in v2.0]
 
 _Details coming soon …_
 
@@ -563,7 +567,7 @@ Action | Format, Examples
 --------|------------------
 **Add** | `add n/NAME e/EMAIL [p/PHONE_NUMBER] [h/TELEGRAM_HANDLE]` <br> e.g., `add n/James Ho e/jamesho@example.com p/22224444 h/james_ho`
 **Clear** | `clear`
-**Cleartag** | `cleartag INDEX [tr/] or [tc/] or [tg/]` <br> e.g., `cleartag 1 tg/`
+**Cleartag** | `cleartag INDEX tr/ or cleartag INDEX tc/ or cleartag INDEX tg/` <br> e.g., `cleartag 1 tg/`
 **Delete** | `delete i/INDEX OR delete e/EMAIL`<br> e.g., `delete i/3 OR delete e/jameslee@example.com `
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com h/jlee01`
 **Exit** | `exit`

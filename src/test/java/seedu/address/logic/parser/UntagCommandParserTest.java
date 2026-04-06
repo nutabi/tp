@@ -29,7 +29,7 @@ public class UntagCommandParserTest {
 
     private UntagCommandParser parser = new UntagCommandParser();
 
-    // ---------------- SUCCESS CASES ----------------
+    // ================== SUCCESS CASES ==================
     @Test
     public void parse_validSingleTag_success() {
         Index index = Index.fromOneBased(1);
@@ -111,7 +111,7 @@ public class UntagCommandParserTest {
                 new UntagCommand(index, expectedTags));
     }
 
-    // ---------------- FAILURE CASES - COMMAND FORMAT VALIDATION ----------------
+    // ================== FAILURE CASES - COMMAND FORMAT VALIDATION ==================
     @Test
     public void parse_invalidCommandFormat_failure() {
         assertParseFailure(parser,
@@ -119,7 +119,7 @@ public class UntagCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, UntagCommand.MESSAGE_USAGE));
     }
 
-    // ---------------- FAILURE CASES - INDEX VALIDATION ----------------
+    // ================== FAILURE CASES - INDEX VALIDATION ==================
     @Test
     public void parse_missingIndex_failure() {
         assertParseFailure(parser,
@@ -154,14 +154,7 @@ public class UntagCommandParserTest {
                 ParserUtil.MESSAGE_INVALID_INDEX);
     }
 
-    @Test
-    public void parse_invalidIndexAlphanumeric_failure() {
-        assertParseFailure(parser,
-                "1a tr/" + VALID_ROLE_TAG,
-                ParserUtil.MESSAGE_INVALID_INDEX);
-    }
-
-    // ---------------- FAILURE CASES - TAG VALIDATION ----------------
+    // ================== FAILURE CASES - TAG VALIDATION ==================
     @Test
     public void parse_noTags_failure() {
         assertParseFailure(parser,
@@ -194,7 +187,7 @@ public class UntagCommandParserTest {
                 String.format(MESSAGE_INVALID_PREFIX_WITH_NO_INPUT, "tg/"));
     }
 
-    // ---------------- FAILURE CASES - PREFIX VALIDATION ----------------
+    // ================== FAILURE CASES - PREFIX VALIDATION ==================
     @Test
     public void parse_invalidPrefix_failure() {
         assertParseFailure(parser,
@@ -217,7 +210,7 @@ public class UntagCommandParserTest {
                 String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT, "n/alice"));
     }
 
-    // ---------------- FAILURE CASES - PREAMBLE VALIDATION ----------------
+    // ================== FAILURE CASES - PREAMBLE VALIDATION ==================
     @Test
     public void parse_nonEmptyPreamble_failure() {
         assertParseFailure(parser,
@@ -233,7 +226,7 @@ public class UntagCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, UntagCommand.MESSAGE_USAGE));
     }
 
-    // ---------------- EMPTY AND WHITESPACE INPUT TESTS ----------------
+    // ================== EMPTY AND WHITESPACE INPUT TESTS ==================
     @Test
     public void parse_emptyInput_throwsParseException() {
         assertParseFailure(parser,

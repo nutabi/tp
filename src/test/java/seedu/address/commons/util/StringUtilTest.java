@@ -124,31 +124,6 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsWordIgnoreCase("AAA bBb ccc  bbb", "bbB"));
     }
 
-    //---------------- Tests for normalize ----------------------------------------
-    @Test
-    public void normalize_nullGiven_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.normalize(null));
-    }
-
-    @Test
-    public void normalize_validString_returnsNormalizedString() {
-        // all lowercase
-        assertEquals("bob", StringUtil.normalize("bob"));
-
-        // Mixed cases
-        assertEquals("bob", StringUtil.normalize("bOb"));
-
-        // Lowercase String with non-alphanumeric characters
-        assertEquals("bob c prim", StringUtil.normalize("bob c. prim"));
-        assertEquals("bob hi", StringUtil.normalize("bob hi."));
-
-        // Mixed case String with non-alphanumeric characters
-        assertEquals("bob c prim", StringUtil.normalize("bob C. PrIm"));
-
-        // String with all punctuation
-        assertEquals("", StringUtil.normalize("#$%^&*()"));
-    }
-
     //---------------- Tests for getDetails --------------------------------------
 
     /*
@@ -166,75 +141,96 @@ public class StringUtilTest {
         assertThrows(NullPointerException.class, () -> StringUtil.getDetails(null));
     }
 
-
-    //---------------- Tests for levenshteinDistance --------------------------------------
-
+    //---------------- Tests for normalize ----------------------------------------
     @Test
-    public void levenshteinDistance_identicalStrings_returnsZero() {
-        assertEquals(0, StringUtil.levenshteinDistance("a", "a"));
-        assertEquals(0, StringUtil.levenshteinDistance("test", "test"));
-        assertEquals(0, StringUtil.levenshteinDistance("kitten", "kitten"));
+    public void normalizeForFuzzyMatching_nullGiven_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.normalizeForFuzzyMatching(null));
     }
 
     @Test
-    public void levenshteinDistance_emptyStrings_returnsCorrectDistance() {
-        assertEquals(0, StringUtil.levenshteinDistance("", ""));
-        assertEquals(4, StringUtil.levenshteinDistance("", "test"));
-        assertEquals(6, StringUtil.levenshteinDistance("", "kitten"));
+    public void normalizeForFuzzyMatching_validString_returnsNormalizedString() {
+        // all lowercase
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("bob"));
+
+        // Mixed cases
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("bOb"));
+
+        // Trailing whitespaces should be trimmed
+        assertEquals("bob", StringUtil.normalizeForFuzzyMatching("\t bob \t"));
+
+        // Lowercase String with non-alphanumeric characters
+        assertEquals("bob c prim", StringUtil.normalizeForFuzzyMatching("bob c. prim"));
+        assertEquals("bob hi", StringUtil.normalizeForFuzzyMatching("bob hi."));
+        assertEquals("jean luc", StringUtil.normalizeForFuzzyMatching("jean-luc."));
+
+        // Mixed case String with non-alphanumeric characters
+        assertEquals("bob c prim", StringUtil.normalizeForFuzzyMatching("bob C. PrIm"));
+
+        // String with all punctuation
+        assertEquals("", StringUtil.normalizeForFuzzyMatching("#$%^&*()"));
+    }
+
+    //---------------- Tests for damerauLevenshteinDistance --------------------------------------
+
+    @Test
+    public void damerauLevenshteinDistance_identicalStrings_returnsZero() {
+        assertEquals(0, StringUtil.damerauLevenshteinDistance("a", "a"));
+        assertEquals(0, StringUtil.damerauLevenshteinDistance("test", "test"));
+        assertEquals(0, StringUtil.damerauLevenshteinDistance("kitten", "kitten"));
     }
 
     @Test
-    public void levenshteinDistance_differentStrings_returnsCorrectDistance() {
+    public void damerauLevenshteinDistance_emptyStrings_returnsCorrectDistance() {
+        assertEquals(0, StringUtil.damerauLevenshteinDistance("", ""));
+        assertEquals(4, StringUtil.damerauLevenshteinDistance("", "test"));
+        assertEquals(6, StringUtil.damerauLevenshteinDistance("", "kitten"));
+    }
+
+    @Test
+    public void damerauLevenshteinDistance_differentStrings_returnsCorrectDistance() {
         // 1 substitution
-        assertEquals(1, StringUtil.levenshteinDistance("cat", "cut"));
+        assertEquals(1, StringUtil.damerauLevenshteinDistance("cat", "cut"));
 
         // 1 insertion
-        assertEquals(1, StringUtil.levenshteinDistance("cat", "cats"));
+        assertEquals(1, StringUtil.damerauLevenshteinDistance("cat", "cats"));
 
         // 1 deletion
-        assertEquals(1, StringUtil.levenshteinDistance("cats", "cat"));
+        assertEquals(1, StringUtil.damerauLevenshteinDistance("cats", "cat"));
+
+        // 1 transposition
+        assertEquals(1, StringUtil.damerauLevenshteinDistance("alex", "alxe"));
 
         // multiple of same operation (3 substitutions)
-        assertEquals(3, StringUtil.levenshteinDistance("kitten", "sitting"));
+        assertEquals(3, StringUtil.damerauLevenshteinDistance("kitten", "sitting"));
 
         // Mix of operations: Example from https://www.youtube.com/watch?v=We3YDTzNXEk
         // 2 substitutions, 1 deletion
-        assertEquals(3, StringUtil.levenshteinDistance("abcdef", "azced"));
+        assertEquals(3, StringUtil.damerauLevenshteinDistance("abcdef", "azced"));
 
         // incremental differences
-        assertEquals(3, StringUtil.levenshteinDistance("abc", "axcde"));
+        assertEquals(3, StringUtil.damerauLevenshteinDistance("abc", "axcde"));
 
         // More realistic real-world examples
-        assertEquals(2, StringUtil.levenshteinDistance("robert", "rupert"));
-        assertEquals(1, StringUtil.levenshteinDistance("email", "e-mail"));
+        assertEquals(2, StringUtil.damerauLevenshteinDistance("robert", "rupert"));
+        assertEquals(1, StringUtil.damerauLevenshteinDistance("olivero", "oliviero"));
     }
 
     @Test
-    public void levenshteinDistance_caseInsensitiveComparison_returnsCorrectDistance() {
-        // identical strings
-        assertEquals(0, StringUtil.levenshteinDistance("Test", "test"));
-        assertEquals(0, StringUtil.levenshteinDistance("Kitten", "kitten"));
-
-        // different strings
-        assertEquals(3, StringUtil.levenshteinDistance("Kitten", "SITTING"));
-    }
-
-    @Test
-    public void levenshteinDistance_symmetryProperty_holds() {
+    public void damerauLevenshteinDistance_symmetryProperty_holds() {
         assertEquals(
-                StringUtil.levenshteinDistance("kitten", "sitting"),
-                StringUtil.levenshteinDistance("sitting", "kitten")
+                StringUtil.damerauLevenshteinDistance("kitten", "sitting"),
+                StringUtil.damerauLevenshteinDistance("sitting", "kitten")
         );
     }
 
     @Test
-    public void levenshteinDistance_nullGiven_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.levenshteinDistance(null, "abc"));
-        assertThrows(NullPointerException.class, () -> StringUtil.levenshteinDistance("abc", null));
-        assertThrows(NullPointerException.class, () -> StringUtil.levenshteinDistance(null, null));
+    public void damerauLevenshteinDistance_nullGiven_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.damerauLevenshteinDistance(null, "abc"));
+        assertThrows(NullPointerException.class, () -> StringUtil.damerauLevenshteinDistance("abc", null));
+        assertThrows(NullPointerException.class, () -> StringUtil.damerauLevenshteinDistance(null, null));
     }
 
-    //---------------- Tests for matchesFuzzy ----------------------------------------
+    //---------------- Tests for isWithinEditDistance ----------------------------------------
 
     /*
      * Invalid equivalence partitions for query/word: null
@@ -243,25 +239,13 @@ public class StringUtilTest {
      */
 
     @Test
-    public void matchesFuzzy_nullQuery_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.matchesFuzzy(null, "word", 1));
+    public void isWithinEditDistance_nullQuery_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.isWithinEditDistance(null, "word", 1));
     }
 
     @Test
-    public void matchesFuzzy_nullWord_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> StringUtil.matchesFuzzy("query", null, 1));
-    }
-
-    @Test
-    public void matchesFuzzy_negativeThreshold_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, "Threshold cannot be negative", () ->
-                StringUtil.matchesFuzzy("query", "word", -1));
-    }
-
-    @Test
-    public void matchesFuzzy_negativeThresholdMultipleNegatives_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, "Threshold cannot be negative", () ->
-                StringUtil.matchesFuzzy("query", "word", -100));
+    public void isWithinEditDistance_nullWord_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.isWithinEditDistance("query", null, 1));
     }
 
     /*
@@ -283,7 +267,6 @@ public class StringUtilTest {
      *   - exact match (distance = 0)
      *   - within threshold (distance <= threshold)
      *   - both strings empty (distance = 0)
-     *   - case-insensitive match
      *
      * Possible scenarios returning false:
      *   - distance exceeds threshold
@@ -294,151 +277,98 @@ public class StringUtilTest {
      */
 
     @Test
-    public void matchesFuzzy_exactMatches_returnsTrue() {
+    public void isWithinEditDistance_exactMatches_returnsTrue() {
         // Identical strings
-        assertTrue(StringUtil.matchesFuzzy("john", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("test", "test", 1));
-        assertTrue(StringUtil.matchesFuzzy("hello", "hello", 2));
-
-        // Case-insensitive exact match
-        assertTrue(StringUtil.matchesFuzzy("John", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("TEST", "test", 0));
-        assertTrue(StringUtil.matchesFuzzy("HeLLo", "HELLO", 0));
+        assertTrue(StringUtil.isWithinEditDistance("john", "john", 0));
+        assertTrue(StringUtil.isWithinEditDistance("test", "test", 1));
+        assertTrue(StringUtil.isWithinEditDistance("hello", "hello", 2));
     }
 
     @Test
-    public void matchesFuzzy_withinThreshold_returnsTrue() {
+    public void isWithinEditDistance_withinThreshold_returnsTrue() {
         // 1 character difference (substitution)
-        assertTrue(StringUtil.matchesFuzzy("john", "joan", 1)); // substitution: h->a
-        assertTrue(StringUtil.matchesFuzzy("cat", "cut", 1)); // substitution: a->u
+        assertTrue(StringUtil.isWithinEditDistance("john", "joan", 1)); // substitution: h->a
+        assertTrue(StringUtil.isWithinEditDistance("cat", "cut", 1)); // substitution: a->u
 
         // 1 character difference (insertion/deletion)
-        assertTrue(StringUtil.matchesFuzzy("cat", "cats", 1)); // insertion: s
-        assertTrue(StringUtil.matchesFuzzy("cats", "cat", 1)); // deletion: s
+        assertTrue(StringUtil.isWithinEditDistance("cat", "cats", 1)); // 1 insertion
+        assertTrue(StringUtil.isWithinEditDistance("cats", "cat", 1)); // 1 deletion: s
+        assertTrue(StringUtil.isWithinEditDistance("jhon", "john", 2)); // 1 transposition
 
         // 2 character differences
-        assertTrue(StringUtil.matchesFuzzy("jhon", "john", 2)); // 2 substitutions
-        assertTrue(StringUtil.matchesFuzzy("kitten", "sitting", 3)); // Multiple operations
+        assertTrue(StringUtil.isWithinEditDistance("kitten", "sitting", 3)); // Multiple operations
 
         // Threshold larger than needed
-        assertTrue(StringUtil.matchesFuzzy("cat", "dog", 5)); // threshold is generous
-
-        // Case-insensitive with threshold
-        assertTrue(StringUtil.matchesFuzzy("john", "JOAN", 1));
-        assertTrue(StringUtil.matchesFuzzy("TEST", "TeSt", 0));
+        assertTrue(StringUtil.isWithinEditDistance("cat", "dog", 5)); // threshold is generous
     }
 
     @Test
-    public void matchesFuzzy_exceedsThreshold_returnsFalse() {
+    public void isWithinEditDistance_exceedsThreshold_returnsFalse() {
         // Significantly different words with small threshold
-        assertFalse(StringUtil.matchesFuzzy("john", "dog", 1)); // distance = 3
-        assertFalse(StringUtil.matchesFuzzy("cat", "elephant", 1)); // very different
-        assertFalse(StringUtil.matchesFuzzy("test", "abc", 2)); // distance = 4
+        assertFalse(StringUtil.isWithinEditDistance("john", "dog", 1)); // distance = 3
+        assertFalse(StringUtil.isWithinEditDistance("cat", "elephant", 1)); // very different
+        assertFalse(StringUtil.isWithinEditDistance("test", "abc", 2)); // distance = 4
 
         // Distance exactly exceeds threshold
-        assertFalse(StringUtil.matchesFuzzy("kitten", "sitting", 2)); // distance = 3
-        assertFalse(StringUtil.matchesFuzzy("abc", "xyz", 2)); // all different
+        assertFalse(StringUtil.isWithinEditDistance("kitten", "sitting", 2)); // distance = 3
+        assertFalse(StringUtil.isWithinEditDistance("abc", "xyz", 2)); // all different
     }
 
     @Test
-    public void matchesFuzzy_zeroThreshold_exactMatchOnly() {
+    public void isWithinEditDistance_zeroThreshold_exactMatchOnly() {
         // Exact matches pass
-        assertTrue(StringUtil.matchesFuzzy("john", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("TEST", "test", 0));
+        assertTrue(StringUtil.isWithinEditDistance("john", "john", 0));
 
         // Any difference fails
-        assertFalse(StringUtil.matchesFuzzy("john", "joan", 0));
-        assertFalse(StringUtil.matchesFuzzy("robert", "rupert", 0));
+        assertFalse(StringUtil.isWithinEditDistance("john", "joan", 0));
+        assertFalse(StringUtil.isWithinEditDistance("robert", "rupert", 0));
     }
 
     @Test
-    public void matchesFuzzy_emptyStrings_handledCorrectly() {
+    public void isWithinEditDistance_emptyStrings_handledCorrectly() {
         // Both empty - should match
-        assertTrue(StringUtil.matchesFuzzy("", "", 0));
-        assertTrue(StringUtil.matchesFuzzy("", "", 1));
-        assertTrue(StringUtil.matchesFuzzy("", "", 10));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 0));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 1));
+        assertTrue(StringUtil.isWithinEditDistance("", "", 10));
 
         // One empty, other non-empty - should not match
-        assertFalse(StringUtil.matchesFuzzy("", "word", 0));
-        assertFalse(StringUtil.matchesFuzzy("", "word", 10));
-        assertFalse(StringUtil.matchesFuzzy("word", "", 0));
-        assertFalse(StringUtil.matchesFuzzy("word", "", 10));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 0));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 10));
+        assertFalse(StringUtil.isWithinEditDistance("word", "", 0));
+        assertFalse(StringUtil.isWithinEditDistance("word", "", 10));
     }
 
     @Test
-    public void matchesFuzzy_withLeadingTrailingSpaces_trimmedCorrectly() {
-        // Strings with spaces are trimmed
-        assertTrue(StringUtil.matchesFuzzy("  john  ", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("john", "  john  ", 0));
-        assertTrue(StringUtil.matchesFuzzy("  john  ", "  john  ", 0));
-
-        // Spaces trimmed, then fuzzy match applied
-        assertTrue(StringUtil.matchesFuzzy("  john  ", "joan", 1));
-        assertTrue(StringUtil.matchesFuzzy("  cat  ", "  cut  ", 1));
-
-        // Trimmed to empty
-        assertTrue(StringUtil.matchesFuzzy("   ", "   ", 0));
-        assertFalse(StringUtil.matchesFuzzy("   ", "word", 0));
-    }
-
-    @Test
-    public void matchesFuzzy_singleCharacters_worksCorrectly() {
+    public void isWithinEditDistance_singleCharacters_worksCorrectly() {
         // Same single character
-        assertTrue(StringUtil.matchesFuzzy("a", "a", 0));
-        assertTrue(StringUtil.matchesFuzzy("X", "x", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "a", 0));
 
         // Different single characters
-        assertFalse(StringUtil.matchesFuzzy("a", "b", 0));
-        assertTrue(StringUtil.matchesFuzzy("a", "b", 1)); // substitution distance = 1
+        assertFalse(StringUtil.isWithinEditDistance("a", "b", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "b", 1)); // substitution distance = 1
 
         // Single character to multi-character
-        assertFalse(StringUtil.matchesFuzzy("a", "abc", 0));
-        assertTrue(StringUtil.matchesFuzzy("a", "abc", 2)); // need deletions/insertions
+        assertFalse(StringUtil.isWithinEditDistance("a", "abc", 0));
+        assertTrue(StringUtil.isWithinEditDistance("a", "abc", 2)); // need deletions/insertions
     }
 
     @Test
-    public void matchesFuzzy_realWorldTypoExamples_worksCorrectly() {
+    public void isWithinEditDistance_realWorldTypoExamples_worksCorrectly() {
         // Common typos with threshold 1
-        assertTrue(StringUtil.matchesFuzzy("name", "nme", 1)); // deletion
-        assertTrue(StringUtil.matchesFuzzy("address", "adress", 1)); // deletion
+        assertTrue(StringUtil.isWithinEditDistance("name", "nme", 1)); // deletion
+        assertTrue(StringUtil.isWithinEditDistance("address", "adress", 1)); // deletion
 
         // Typos that exceed threshold
-        assertFalse(StringUtil.matchesFuzzy("johnny", "jhny", 1)); // 2 deletions
+        assertFalse(StringUtil.isWithinEditDistance("johnny", "jhny", 1)); // 2 deletions
     }
 
     @Test
-    public void matchesFuzzy_largeThreshold_alwaysMatches() {
+    public void isWithinEditDistance_largeThreshold_alwaysMatches() {
         // With very large threshold, almost any strings match
-        assertTrue(StringUtil.matchesFuzzy("completely", "different", 100));
-        assertTrue(StringUtil.matchesFuzzy("a", "zzzzzzzzzzz", 100));
+        assertTrue(StringUtil.isWithinEditDistance("completely", "different", 100));
+        assertTrue(StringUtil.isWithinEditDistance("a", "zzzzzzzzzzz", 100));
 
         // Except when one is empty and other is not, unless both are empty
-        assertFalse(StringUtil.matchesFuzzy("", "word", 100));
+        assertFalse(StringUtil.isWithinEditDistance("", "word", 100));
     }
-
-    @Test
-    public void matchesFuzzy_caseInsensitive_worksCorrectly() {
-        // Various case combinations should work
-        assertTrue(StringUtil.matchesFuzzy("john", "John", 0));
-        assertTrue(StringUtil.matchesFuzzy("JOHN", "john", 0));
-        assertTrue(StringUtil.matchesFuzzy("JoHn", "jOhN", 0));
-        assertTrue(StringUtil.matchesFuzzy("TEST@123", "test@123", 0));
-
-        // Case-insensitive fuzzy matching
-        assertTrue(StringUtil.matchesFuzzy("John", "Joan", 1));
-        assertTrue(StringUtil.matchesFuzzy("TEST", "TOST", 1));
-    }
-
-    @Test
-    public void matchesFuzzy_specialCharacters_handled() {
-        // Strings with special characters
-        assertTrue(StringUtil.matchesFuzzy("test@email.com", "test@email.com", 0));
-        assertTrue(StringUtil.matchesFuzzy("test-name", "test-name", 0));
-
-        // Special character differences
-        assertFalse(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 0));
-        assertTrue(StringUtil.matchesFuzzy("test@email.com", "testemail.com", 1)); // 1 deletion
-    }
-
-    //
 }

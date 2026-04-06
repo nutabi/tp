@@ -9,12 +9,13 @@ import seedu.address.commons.util.ToStringBuilder;
 
 /**
  * Tests whether a {@link Person} matches any of the given name keywords,
- * email keywords, and tags. Empty keyword/tag collections are treated as "match all" for that field.
+ * email keywords, and tags. All matching is done case-insensitively,
+ * and empty keyword/tag collections are treated as "match all" for that field.
  *
  * <p>Matching behaviors by field:
  * <ul>
- *    <li><b>Name keywords:</b> Uses both exact substring matching and fuzzy matching (with dynamic
- *        Levenshtein distance threshold) to handle typos and variations. See
+ *    <li><b>Name keywords:</b> Uses both exact substring matching and edit-distance-based fuzzy matching
+ *        (with Damerau–Levenshtein distance threshold) to handle typos and variations. See
  *        {@link NameContainsKeywordsPredicate} for details.</li>
  *    <li><b>Email keywords:</b> Uses exact substring matching for email addresses.</li>
  *    <li><b>Tags:</b> Uses exact matching on tag names.</li>
@@ -23,7 +24,7 @@ import seedu.address.commons.util.ToStringBuilder;
  *
  * <p>Logic combination:
  * <ul>
- *    <li>OR logic within each field (e.g., multiple name keywords match if ANY match)</li>
+ *    <li>OR logic within each field (any keyword/tag matches → field matches)</li>
  *    <li>AND logic across different fields (all non-empty field criteria must match)</li>
  * </ul>
  * </p>
@@ -54,18 +55,19 @@ public class NameEmailTagPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        boolean nameMatches = nameKeywords.isEmpty()
+        boolean isNameMatch = nameKeywords.isEmpty()
                 || new NameContainsKeywordsPredicate(nameKeywords).test(person);
 
-        boolean emailMatches = emailKeywords.isEmpty()
+        boolean isEmailMatch = emailKeywords.isEmpty()
                 || new EmailContainsKeywordsPredicate(emailKeywords).test(person);
 
-        boolean tagMatches = tags.isEmpty()
+        boolean isTagMatch = tags.isEmpty()
                 || new PersonContainsTagsPredicate(tags).test(person);
 
         // AND across fields
-        return nameMatches && emailMatches && tagMatches;
+        return isNameMatch && isEmailMatch && isTagMatch;
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

@@ -9,7 +9,10 @@ import java.util.function.Predicate;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Tests that a Person's tags matches one of the tags given.
+ * Tests whether a {@code Person} has any tag whose name matches one of the given tag names.
+ *
+ * <p>Matching is case-insensitive and is performed on whole tag names. A person is considered
+ * a match if at least one of the person's tags is equal to one of the supplied tag names.</p>
  */
 public class PersonContainsTagsPredicate implements Predicate<Person> {
     private final List<String> tagNames;

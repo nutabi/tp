@@ -39,31 +39,6 @@ public class StringUtil {
     }
 
     /**
-     * Normalizes the input string by converting it to lowercase and removing special characters such as punctuation.
-     *
-     * <p>This method standardizes strings for comparison and storage by:
-     * <ul>
-     *   <li>Converting all characters to lowercase for case-insensitive operations</li>
-     *   <li>Removing all special characters (punctuation, symbols, etc.)</li>
-     *   <li>Preserving alphanumeric characters (a-z, 0-9) and whitespace</li>
-     * </ul>
-     * </p>
-     *
-     * <p>This is useful for fuzzy matching, search preprocessing, or comparing names
-     * that may contain special characters or inconsistent casing.</p>
-     *
-     * @param s the string to normalize (cannot be null)
-     * @return the normalized string with lowercase letters, digits, and spaces only
-     * @throws NullPointerException if {@code s} is {@code null}
-     */
-    public static String normalize(String s) {
-        requireNonNull(s);
-
-        return s.toLowerCase()
-                .replaceAll("[^a-z0-9\\s]", "");
-    }
-
-    /**
      * Returns a detailed message of the t, including the stack trace.
      */
     public static String getDetails(Throwable t) {
@@ -91,97 +66,150 @@ public class StringUtil {
         }
     }
 
+    //====================== Fuzzy String Matching ============================/
 
     /**
-     * Computes the Levenshtein distance between two strings.
+     * Normalizes the input string for fuzzy matching by converting it to lowercase
+     * and replacing non-alphanumeric characters with spaces.
      *
-     * <p>The Levenshtein distance is the minimum number of single-character edits
-     * (insertions, deletions, or substitutions) required to transform one string
-     * into the other.</p>
+     * <p>This method prepares strings for fuzzy comparison by:
+     * <ul>
+     *   <li>Converting all characters to lowercase</li>
+     *   <li>Replacing non-alphanumeric characters (punctuation, symbols, etc.) with spaces</li>
+     *   <li>Collapsing multiple spaces into a single space</li>
+     *   <li>Trimming leading and trailing whitespace</li>
+     * </ul>
      *
-     * <p>This implementation is case-insensitive and uses a dynamic programming
-     * approach with O(n × m) time and space complexity, where n and m are the
-     * lengths of the input strings.</p>
-     *
-     * @param a the first string
-     * @param b the second string
-     * @return the Levenshtein distance between {@code a} and {@code b}
-     * @throws NullPointerException if either input string is {@code null}
+     * @param s the string to normalize (cannot be null)
+     * @return the normalized string containing lowercase letters, digits, and spaces only
+     * @throws NullPointerException if {@code s} is {@code null}
      */
-    static int levenshteinDistance(String a, String b) {
-        requireNonNull(a);
-        requireNonNull(b);
+    public static String normalizeForFuzzyMatching(String s) {
+        requireNonNull(s);
 
-        int n = a.length();
-        int m = b.length();
+        return s.toLowerCase()
+                .replaceAll("[^a-z0-9\\s]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
 
-        int[][] dpMatrix = new int[n + 1][m + 1];
+    /**
+     * Computes the Damerau–Levenshtein distance (OSA variant) between {@code keyword} and {@code target}.
+     *
+     * <p>This distance measures the minimum number of single-character edits (insertion, deletion,
+     * substitution, or transposition of adjacent characters) required to transform {@code keyword} into
+     * {@code target}.</p>
+     *
+     * <p>This implementation uses a dynamic programming approach with O(n × m) time and space complexity,
+     * where n and m are the lengths of the input strings.</p>
+     *
+     * Preconditions:
+     * <ul>
+     *   <li>{@code keyword} and {@code target} must be normalized
+     *       (e.g. trimmed, lowercased and with non-alphanumeric characters handled consistently)</li>
+     * </ul>
+     *
+     * @param keyword input string (e.g. user search query)
+     * @param target the string to compare against (e.g. contact name)
+     * @return the edit distance between {@code keyword} and {@code target}
+     * @throws NullPointerException if either argument is {@code null}
+     */
+    static int damerauLevenshteinDistance(String keyword, String target) {
+        requireNonNull(keyword);
+        requireNonNull(target);
 
-        // first row (steps to transform "" → b[0..col])
+        // Verify pre-conditions
+        assert keyword.equals(normalizeForFuzzyMatching(keyword)) : "keyword must be normalized";
+        assert target.equals(normalizeForFuzzyMatching(target)) : "target must be normalized";
+
+        int n = keyword.length();
+        int m = target.length();
+
+        // dynamic programming matrix
+        int[][] dp = new int[n + 1][m + 1];
+
+        // initialize the first row of the matrix
         for (int col = 0; col <= m; col++) {
-            dpMatrix[0][col] = col;
+            dp[0][col] = col;
         }
 
-        // first column (steps to transform "" → a[0..row])
+        // initialize the first col of the matrix
         for (int row = 0; row <= n; row++) {
-            dpMatrix[row][0] = row;
+            dp[row][0] = row;
         }
 
         // Fill up the matrix using dynamic programming
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
-                char chA = Character.toLowerCase(a.charAt(i - 1));
-                char chB = Character.toLowerCase(b.charAt(j - 1));
+                char currentKeywordChar = keyword.charAt(i - 1);
+                char currentTargetChar = target.charAt(j - 1);
 
-                int cost = (chA == chB) ? 0 : 1;
-                dpMatrix[i][j] = Math.min(
-                        dpMatrix[i - 1][j] + 1, // deletion
-                        Math.min(dpMatrix[i][j - 1] + 1, // insertion
-                                dpMatrix[i - 1][j - 1] + cost) // substitution/match
+                int cost = (currentKeywordChar == currentTargetChar) ? 0 : 1;
+                dp[i][j] = Math.min(
+                        dp[i - 1][j] + 1, // deletion
+                        Math.min(dp[i][j - 1] + 1, // insertion
+                                dp[i - 1][j - 1] + cost) // substitution/match
                 );
+
+
+                // Handles transpositions (swapping adjacent characters)
+                if (i > 1 && j > 1) {
+                    char prevKeywordChar = keyword.charAt(i - 2);
+                    char prevTargetChar = target.charAt(j - 2);
+
+                    if (currentKeywordChar == prevTargetChar
+                            && prevKeywordChar == currentTargetChar) {
+                        dp[i][j] = Math.min(
+                                dp[i][j],
+                                dp[i - 2][j - 2] + 1 // transposition
+                        );
+                    }
+                }
             }
         }
 
-        return dpMatrix[n][m];
+        return dp[n][m];
     }
 
     /**
-     * Returns true if the {@code query} matches the {@code word} using fuzzy matching.
+     * Returns true if the {@code target} is within a given edit distance from the {@code keyword}.
      *
-     * <p>Fuzzy matching uses Levenshtein/edit distance to allow approximate matches.
-     * The method returns true if the Levenshtein/edit distance between the query and word
-     * is less than or equal to the specified threshold.</p>
+     * <p>This method uses the Damerau–Levenshtein distance (Optimal String Alignment variant) to
+     * compute the minimum number of edits required to transform {@code keyword} into {@code target}.
+     * The method returns true if this distance is less than or equal to {@code threshold}.</p>
      *
-     * <p>This is useful for typo-tolerant searches. For example, with a threshold of 2,
-     * "john" would match "joan" or "jhon".</p>
+     * <p>Preconditions:
+     *   <ul>
+     *       <li>{@code keyword} and {@code target} must be non-null</li>
+     *       <li>{@code keyword} and {@code target} must already be normalized
+     *           (trimmed, lowercased, and with non-alphanumeric characters handled consistently)</li>
+     *       <li>{@code threshold} must be non-negative</li>
+     *   </ul>
      *
-     * <p>The matching is case-insensitive.</p>
-     *
-     * @param query the search query string (will be trimmed)
-     * @param word the word to match against (will be trimmed)
-     * @param threshold the maximum Levenshtein distance allowed for a match
-     * @return true if the words match within the threshold, false otherwise
-     * @throws NullPointerException if {@code query} or {@code word} is {@code null}
-     * @throws IllegalArgumentException if {@code threshold} is negative
+     * @param keyword the search term (user input)
+     * @param target the string to match against (e.g., contact name)
+     * @param threshold the maximum allowed edit distance for a match
+     * @return true if {@code target} is within {@code threshold} edits of {@code keyword}, false otherwise
+     * @throws NullPointerException if {@code keyword} or {@code target} is null
      */
-    public static boolean matchesFuzzy(String query, String word, int threshold) {
-        requireNonNull(query, "Query cannot be null");
-        requireNonNull(word, "Word cannot be null");
-        checkArgument(threshold >= 0, "Threshold cannot be negative");
+    public static boolean isWithinEditDistance(String keyword, String target, int threshold) {
+        requireNonNull(keyword);
+        requireNonNull(target);
 
-        // Normalize inputs by trimming whitespace
-        String trimmedQuery = query.trim();
-        String trimmedWord = word.trim();
+        // Verify pre-conditions
+        assert keyword.equals(normalizeForFuzzyMatching(keyword)) : "keyword must be normalized";
+        assert target.equals(normalizeForFuzzyMatching(target)) : "target must be normalized";
+        assert threshold >= 0 : "threshold must be non-negative";
 
         // Handle empty strings after trimming
-        if (trimmedQuery.isEmpty() || trimmedWord.isEmpty()) {
+        if (keyword.isEmpty() || target.isEmpty()) {
             // Empty query should not match non-empty word and vice versa
             // except when both are empty (distance = 0)
-            return trimmedQuery.isEmpty() && trimmedWord.isEmpty();
+            return keyword.isEmpty() && target.isEmpty();
         }
 
-        // Calculate Levenshtein distance and check if within threshold
-        int distance = levenshteinDistance(trimmedQuery, trimmedWord);
+        // Calculate Damerau Levenshtein Distance and check if within threshold
+        int distance = damerauLevenshteinDistance(keyword, target);
         return distance <= threshold;
     }
 

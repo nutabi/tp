@@ -1,6 +1,14 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
+import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
+import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
+import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +16,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
@@ -26,6 +35,7 @@ import seedu.address.model.tag.TagType;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer (1, 2, 3...).";
+    private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile(".*[a-zA-Z0-9].*");
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -136,6 +146,25 @@ public class ParserUtil {
     }
 
     /**
+     * Parses all type of tags from the ArgumentMultimap and returns them as a Set.
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments.
+     * @return a Set of parsed Tags.
+     * @throws ParseException if any tag fails validation.
+     */
+    public static Set<Tag> parseAllTypeOfTags(ArgumentMultimap argMultimap) throws ParseException {
+        Set<Tag> tagList = new HashSet<>();
+
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_ROLE_TAG), TagType.ROLE));
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_COURSE_TAG), TagType.COURSE));
+        tagList.addAll(parseTags(argMultimap.getAllValues(PREFIX_GENERAL_TAG), TagType.GENERAL));
+
+        return tagList;
+    }
+
+    //================================= Input Validation ==============================================/
+
+    /**
      * Returns the first disallowed prefixed token in input order, if any.
      * A prefix is only recognized when preceded by whitespace, matching ArgumentTokenizer behavior.
      */
@@ -177,7 +206,7 @@ public class ParserUtil {
      * If none of the provided prefixes have empty values, an empty {@code Optional} is returned.
      *
      * @param argMultimap the {@link ArgumentMultimap} containing the mapping of prefixes to values
-     * @param prefixes the prefixes to check for empty values
+     * @param prefixes    the prefixes to check for empty values
      * @return an {@link Optional} containing the first prefix from {@code prefixes} that has
      *         an empty value, or {@code Optional.empty()} if none of them do
      */
@@ -200,9 +229,29 @@ public class ParserUtil {
     }
 
     /**
-     * Returns the first prefixed token that is NOT in the allowed prefixes list.
+     * Validates that no prefix has an empty value.
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param prefixes    the prefixes to check for empty values
+     * @throws ParseException if an empty prefix value is found
      */
-    public static Optional<String> findInvalidPrefixInput(String args, Prefix[] allowedPrefixes) {
+    public static void validateNoEmptyPrefixValues(
+            ArgumentMultimap argMultimap, Prefix... prefixes
+    ) throws ParseException {
+        Optional<String> emptyPrefix = findEmptyPrefixValues(argMultimap, prefixes);
+        if (emptyPrefix.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_PREFIX_WITH_NO_INPUT, emptyPrefix.get()));
+        }
+    }
+
+    /**
+     * Returns the first prefixed token that is NOT in the allowed prefixes list, if any.
+     *
+     * @param args            the raw input arguments string
+     * @param allowedPrefixes the prefixes that are allowed in the command
+     * @return Optional containing the first invalid prefixed token, if any
+     */
+    public static Optional<String> findInvalidPrefixInput(String args, Prefix... allowedPrefixes) {
         Set<String> allowedPrefixSet = Arrays.stream(allowedPrefixes)
                 .map(prefix -> prefix.getPrefix().toLowerCase(Locale.ROOT))
                 .collect(Collectors.toSet());
@@ -223,15 +272,34 @@ public class ParserUtil {
     }
 
     /**
-     * Validates that all given prefix values are empty (no text after the prefix).
-     * This is used for commands like cleartag where only the prefix should be provided
-     * without any values.
+     * Validates that no invalid prefixes are present in the input.
      *
-     * @param argMultimap The ArgumentMultimap containing the tokenized arguments
-     * @param prefixes    The prefixes to check for empty values
+     * @param args            the raw input arguments string
+     * @param allowedPrefixes the prefixes that are allowed in the command
+     * @throws ParseException if an invalid prefix is found
+     */
+    public static void validateNoInvalidPrefixInputs(String args, Prefix... allowedPrefixes) throws ParseException {
+        Optional<String> invalidPrefix = findInvalidPrefixInput(args, allowedPrefixes);
+        if (invalidPrefix.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT, invalidPrefix.get()));
+        }
+    }
+
+    /**
+     * Returns the first prefix that has a non-empty value, if any.
+     *
+     * <p>This method is used for commands where prefixes should appear without any following
+     * values, such as the {@code cleartag} command. For example:</p>
+     * <ul>
+     *     <li>{@code cleartag 1 tg/} - valid, as {@code tg/} has no value</li>
+     *     <li>{@code cleartag 1 tg/friends} - invalid, as {@code tg/} has the value "friends"</li>
+     * </ul>
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param prefixes    the prefixes to check for empty values
      * @return Optional containing the first prefix that has a non-empty value, if any
      */
-    public static Optional<String> validateEmptyPrefixValues(ArgumentMultimap argMultimap, Prefix... prefixes) {
+    public static Optional<String> findNoValuesAfterPrefix(ArgumentMultimap argMultimap, Prefix... prefixes) {
         for (Prefix prefix : prefixes) {
             String value = argMultimap.getValue(prefix).orElse("");
             if (!value.isEmpty()) {
@@ -240,5 +308,59 @@ public class ParserUtil {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Validates that all prefixes have empty values (no text after the prefix).
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param prefixes    the prefixes to check for non-empty values
+     * @throws ParseException if a prefix has a non-empty value
+     */
+    public static void validateNoValuesAfterPrefix(
+            ArgumentMultimap argMultimap, Prefix... prefixes
+    ) throws ParseException {
+        Optional<String> nonEmptyPrefix = findNoValuesAfterPrefix(argMultimap, prefixes);
+        if (nonEmptyPrefix.isPresent()) {
+            throw new ParseException(String.format(MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE, nonEmptyPrefix.get()));
+        }
+    }
+
+    /**
+     * Validates that the preamble of the given {@code ArgumentMultimap} is empty,
+     * i.e., that there is no unexpected text before the first valid prefix.
+     *
+     * @param argMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param usageMessage the command usage message to include in the exception
+     * @throws ParseException if the preamble is not empty
+     */
+    public static void validateEmptyPreamble(
+            ArgumentMultimap argMultimap, String usageMessage) throws ParseException {
+
+        if (!argMultimap.getPreamble().isBlank()) {
+            throw new ParseException(
+                    String.format(MESSAGE_PREAMBLE_NOT_EMPTY, argMultimap.getPreamble(), usageMessage));
+        }
+    }
+
+    /**
+     * Validates that the given token contains at least one alphanumeric character.
+     * <p>
+     * A token consisting only of special characters is considered invalid and
+     * will cause a {@code ParseException} to be thrown.
+     *
+     * @param prefix the {@code Prefix} associated with the token (used in the error message)
+     * @param token the string token to validate
+     * @throws ParseException if the token contains only non-alphanumeric characters
+     */
+    public static void validateKeywordContainsAlphanumeric(Prefix prefix, String token)
+            throws ParseException {
+        // If the token does not contain any alphanumeric characters, it is invalid
+        if (!ALPHANUMERIC_PATTERN.matcher(token).matches()) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
+                    prefix.getPrefix(),
+                    token));
+        }
     }
 }

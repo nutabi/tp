@@ -8,9 +8,13 @@ import java.util.function.Predicate;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Tests that a {@code Person}'s {@code Email} matches any of the keywords given.
+ * Tests whether a {@code Person}'s {@code Email} contains any of the given keywords.
+ *
+ * <p>Matching is case-insensitive and is performed against the person's full email address.
+ * A person is considered a match if at least one keyword is a substring of the email.</p>
  */
 public class EmailContainsKeywordsPredicate implements Predicate<Person> {
+
     private final List<String> keywords;
 
     /**
