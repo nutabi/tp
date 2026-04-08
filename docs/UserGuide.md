@@ -404,14 +404,15 @@ Finds persons whose names, emails, or tags match the given keywords.
 * The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
 * The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh`.
 * Keywords consisting **only of special characters** are not allowed (e.g., `.`, `#`, `!@#`). If you provide such a keyword, an error message will be shown.
-* Keywords containing both letters and special characters are valid (e.g., `"Dr."`, `"J."`), but special characters are ignored during name processing.
+* Keywords containing a mix of alphanumeric and special characters are allowed (e.g., `"Dr."`, `"J."`, `"A-12"`).
+* Avoid including slash-prefixed fragments inside keywords (for example, `find n/alex s/o`). Such input is interpreted as command syntax rather than part of the keyword, so the command will be rejected with an error message.
 
 **Matching behavior:**
 * **Name keywords** use both exact substring matching and fuzzy matching (typo-tolerant):
   * Exact match: `Jo` will match `John` and `Alice Johnson`.
   * Fuzzy match: `jon` will also match `John` (handles typos like missing or swapped letters).
   * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
-  * Special characters in names are ignored during processing. e.g. searching for `"Robert"` will match names like `"Robert-Smith"` or `"O'Robert"`.
+  * Special characters in name keywords are converted into spaces. For example, `Robert-Smith` is treated as `Robert Smith`, so it can match names such as `Robert` or `Smith`.
 * **Email keywords** use exact substring matching.
   e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
 * **Tags** use exact matching.
