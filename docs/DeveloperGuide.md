@@ -274,7 +274,7 @@ The following Activity diagram illustrates the control flow of command execution
 
 Note: Undo methods in commands directly interact with the `Model` to revert changes. Hence, we are not having an object diagram here. UI and Storage components are omitted from the diagrams as they are not directly involved in the undo mechanism.
 
-#### Design considerations:
+#### Design Considerations
 
 **Aspect: How undo & redo executes:**
 
@@ -286,13 +286,6 @@ Note: Undo methods in commands directly interact with the `Model` to revert chan
   itself.
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
-
 
 --------------------------------------------------------------------------------------------------------------------
 
