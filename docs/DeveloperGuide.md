@@ -1296,18 +1296,18 @@ testers are expected to do more *exploratory* testing.
 
     1. Test case: `add n/A e/a@example.com`, `list`, `delete i/1`, then `undo`<br>
        Expected: The deleted contact is restored. The `list` command is ignored by undo.
-
-6. Invalid undo command
-
-    1. Test case: `undo extra`   
-       Expected: No changes to the contact list. Error details shown in the status message indicating that the command does not accept parameters.
-
-7. Persistence after undo
+   
+6. Persistence after undo
 
     1. Prerequisites: List all persons using the `list` command.
 
     1. Test case: `add n/John Doe e/johndoe@example.com`, then `undo`, then restart the application<br>
        Expected: The contact list reflects the undone state (i.e., the added contact does not appear).
+
+7. Invalid undo command
+
+    1. Test case: `undo extra`<br>
+       Expected: No changes to the contact list. Error details shown in the status message indicating that the command does not accept parameters.
 
 ### Navigating command history
 
