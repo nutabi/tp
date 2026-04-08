@@ -197,7 +197,7 @@ Edits an existing person in the address book.
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * Any unexpected slash-prefixed token is rejected as extra input.
-* Prefixes are case-insensitive. (n/ and N/ are treated the same)
+* Prefixes are case-insensitive (n/ and N/ are treated the same).
 * Repeated prefixes for single-valued fields are not allowed. For example, edit n/Amy n/Ben e/x@example.com is invalid.
 * Phone numbers provided must contain only digits and be at least 3 digits long.
 * Requirements for an email provided is specified [here](#email-validation).
