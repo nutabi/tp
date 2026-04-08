@@ -120,7 +120,7 @@ Non-NUS emails are still accepted, but a warning will be displayed to alert you 
   e.g `n/NAME [p/PHONE_NUMBER]` can be used as `n/John Doe p/1234567` or as `n/John Doe`.
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[tg/GENERAL_TAG]…​` can be used as `&nbsp;` (i.e. 0 times), `tg/friend`, `tg/friend tg/family` etc.
+  e.g. `[tg/GENERAL_TAG]…​` can be used as <code>&nbsp;</code> (i.e. 0 times), `tg/friend`, `tg/friend tg/family` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
