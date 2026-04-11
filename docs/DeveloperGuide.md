@@ -644,22 +644,14 @@ Use case ends.
 
 **MSS:**
 1. User requests to undo the most recent action.
-2. CampusBridge retrieves the most recent undoable command from the undo history.
-3. CampusBridge invokes the undo operation of that command.
-4. The command reverses its own effects on the application state.
-5. CampusBridge updates the undo history.
-6. CampusBridge shows the updated state and a success message.
+2. CampusBridge restores the data to its previous state.
+3. CampusBridge shows the updated state and a success message.
 
 Use case ends.
 
 **Extensions:**
-* 2a. No undoable commands available in undo history.
-  * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
-
-  Use case ends.
-
-* 3a. Command fails to execute its undo operation.
-  * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
+* 1a. No undoable commands available in undo history.
+  * 1a1. CampusBridge shows an error message indicating that there are no actions to undo.
 
   Use case ends.
 
