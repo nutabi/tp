@@ -283,7 +283,7 @@ Note: Undo methods in commands directly interact with the `Model` to revert chan
 
 #### Design Considerations
 
-**Aspect: How undo & redo executes:**
+**Aspect: How undo executes:**
 
 * **Alternative 1 :** Saves the entire address book.
   * Pros: Easy to implement.
