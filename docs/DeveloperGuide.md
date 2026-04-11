@@ -987,7 +987,7 @@ testers are expected to do more *exploratory* testing.
       Expected: Only one `tutor` role tag is added to the 2nd person in the list. Status message shows the details of the new tags added.
 
    1. Test case: `tag 2 tr/mentor tg/mentor` (same name, different types)<br>
-      Expected: Both `mentor` tutor tag and `mentor` general tag are added to the 2nd person in the list. Status message shows the details of the new tags added.
+      Expected: Both `mentor` role tag and `mentor` general tag are added to the 2nd person in the list. Status message shows the details of the new tags added.
 
 1. Adding tags to a person where some tags already exist
 
