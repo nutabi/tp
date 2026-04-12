@@ -159,6 +159,7 @@ Examples:
 * `help add` — opens the user guide at the **Adding a person** section.
 * `help sort` — opens the user guide at the **Sorting persons** section.
 
+Supported commands: `help`, `add`, `edit`, `delete`, `untag`, `cleartag`, `list`, `sort`, `find`, `clear`, `exit`
 
 ### Adding a person : `add`
 
