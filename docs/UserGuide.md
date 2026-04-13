@@ -553,7 +553,7 @@ Clears all entries from the address book.
 
 **Format:** `clear`
 
-![Image](images/clearcommand.png)
+![ClearCommandSuccessResultImage](images/clearcommand.png)
 
 ### Exiting the program : `exit`
 
