@@ -103,12 +103,17 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 
 CampusBridge is designed for NUS students and staff. When adding or editing a contact:
 
-| Email domain            | Behavior                                   |
-|-------------------------|--------------------------------------------|
-| `@u.nus.edu` (student)  | No warning                                 |
-| `@nus.edu.sg` (staff)   | No warning                                 |
-| `@*.nus.edu.sg` (staff) | No warning                                 |
-| Other domains           | Warning shown (but contact is still added) |
+| Email domain         | Behavior                                   |
+|----------------------|--------------------------------------------|
+| `@u.nus.edu`         | No warning                                 |
+| `@*.nus.edu`         | No warning                                 |
+| `@nus.edu.sg`        | No warning                                 |
+| `@*.nus.edu.sg`      | No warning                                 |
+| `@duke-nus.edu.sg`   | No warning                                 |
+| `@*.duke-nus.edu.sg` | No warning                                 |
+| `@yale-nus.edu.sg`   | No warning                                 |
+| `@*.yale-nus.edu.sg` | No warning                                 |
+| Other domains        | Warning shown (but contact is still added) |
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Note:**
 Non-NUS emails are still accepted, but a warning will be displayed to alert you that the email does not belong to an NUS domain.
@@ -218,7 +223,7 @@ Edits an existing person in the address book.
   Other special characters are not supported. In particular, `/` is not accepted because it may be interpreted as command syntax. If needed, replace it with a supported symbol instead, e.g. `D/O` as `D-O`.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
-If the updated email is not an [NUS domain](#email-validation) (`@u.nus.edu` or `@*.nus.edu.sg` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
+If the updated email is not an [NUS domain](#email-validation), a warning message will be shown. The contact will still be updated.
 </div>
 
 **Examples:**
