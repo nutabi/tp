@@ -75,6 +75,10 @@ CampusBridge supports three tag types, each displayed in a distinct colour:
 * Tag names must be unique within their type — you cannot create two Role tags with the same name.
 * Different tag types can share the same name (e.g. a Role tag `mentor` and a General tag `mentor` can both exist).
 
+<div markdown="span" class="alert alert-info">:information_source: **Note:**
+Long tag names (and other fields) may appear **truncated** in the contact card for readability. To retrieve the full value, **click on the field** in the contact card — it will be copied to your clipboard, and you can paste it wherever needed.
+</div>
+
 ### Email validation
 
 Emails should be of the format `local-part@domain` and adhere to the following constraints:
@@ -416,6 +420,10 @@ Sorts all persons in reverse lexicographic order by phone number.
 * `sort o/none`<br/>
 Resets the list to its default order.
 
+<div markdown="span" class="alert alert-info">:information_source: **Note:**
+The sort order stays active until you explicitly reset it (e.g. with `sort o/none` or `list`). Data commands (`add`, `edit`, `delete`, `tag`, `untag`, `cleartag`) do not reset the sort order.
+</div>
+
 ### Locating persons by name/email/tag : `find`
 
 Finds persons whose names, emails, or tags match the given keywords.
@@ -449,6 +457,10 @@ Finds persons whose names, emails, or tags match the given keywords.
   e.g. `find n/Alex n/David` behaves the same as `find n/Alex David`.
 * Empty prefixes are not allowed.
   e.g. `find n/Alex e/` is invalid.
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:**
+The filter set by `find` stays active until you explicitly clear it (e.g. by running `list`). Data commands (`add`, `edit`, `delete`, `tag`, `untag`, `cleartag`) do not reset the active filter or sort order, so contacts that do not match the current filter may not appear in the list even after being added or modified.
+</div>
 
 **Examples:**
 * `find n/John`<br/>
